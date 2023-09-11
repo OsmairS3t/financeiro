@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { FlatList, Button, Text } from 'react-native';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { FlatList, Button, Text, Pressable } from 'react-native';
+import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 import { IResumeCategory } from '@utils/interfaces';
 import { Balances, Categories } from '@utils/database';
@@ -34,14 +34,13 @@ export function Home() {
     const [resumes, setResumes] = useState<IResumeCategory[]>([])
     const [dateBalance, setDateBalance] = useState('01/08/2023')
 
-    const onChange = (selectedDate:Date) => {
-        const currentDate = selectedDate;
+    function onChange(selectedDate: Date) {
         setIsOpen(false)
-        setDate(currentDate);
+        setDate(selectedDate);
     };
-    
+
     const showDatepicker = () => {
-        setMode('date');
+        setIsOpen(true)
     };
 
     function handleListBalance() {
@@ -105,13 +104,16 @@ export function Home() {
                 </ButtonNavigate>
 
                 <GroupInput>
-                    <Button title="Open" onPress={showDatepicker} />
-                    <Text>selected: {date.toLocaleString()}</Text>
+                    <ButtonDate onPress={showDatepicker}>
+                        <Text>{date.toDateString()}</Text>
+                    </ButtonDate>
                     {isOpen && (
                         <DateTimePicker
+                            display='spinner'
                             value={date}
                             mode='date'
-                            onChange={onChange}
+                            locale='pt-BR'
+                            onChange={() => onChange(date)}
                         />
                     )}
                 </GroupInput>

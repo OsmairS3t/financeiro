@@ -26,7 +26,14 @@ export const GroupInput = styled.View`
     width: 50%;
 `;
 
-export const ButtonDate = styled.Button``;
+export const ButtonDate = styled.Pressable`
+    padding: 10px;
+    border-width: 1px;
+    border-style: solid;
+    align-items: center;
+    border-color: ${({ theme }) => theme.COLORS.BORDER_INPUT};
+    background-color: ${({ theme }) => theme.COLORS.BG_INPUT};
+`;
 
 export const GroupGraphic = styled.View`
     flex-direction: row;
