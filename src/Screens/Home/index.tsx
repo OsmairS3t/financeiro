@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { FlatList, Button, Text } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 import { IResumeCategory } from '@utils/interfaces';
 import { Balances, Categories } from '@utils/database';
@@ -25,9 +26,23 @@ import {
 
 export function Home() {
     const navigation = useNavigation();
+    const [date, setDate] = useState(new Date())
+    const [mode, setMode] = useState('date');
+    const [isOpen, setIsOpen] = useState(false)
+
     const [totalBalance, setTotalBalance] = useState(0)
     const [resumes, setResumes] = useState<IResumeCategory[]>([])
     const [dateBalance, setDateBalance] = useState('01/08/2023')
+
+    const onChange = (selectedDate:Date) => {
+        const currentDate = selectedDate;
+        setIsOpen(false)
+        setDate(currentDate);
+    };
+    
+    const showDatepicker = () => {
+        setMode('date');
+    };
 
     function handleListBalance() {
         navigation.navigate('listbalance')
@@ -90,10 +105,15 @@ export function Home() {
                 </ButtonNavigate>
 
                 <GroupInput>
-                    <ButtonDate
-                        title={dateBalance}
-                        onPress={() => { }}
-                    />
+                    <Button title="Open" onPress={showDatepicker} />
+                    <Text>selected: {date.toLocaleString()}</Text>
+                    {isOpen && (
+                        <DateTimePicker
+                            value={date}
+                            mode='date'
+                            onChange={onChange}
+                        />
+                    )}
                 </GroupInput>
                 <ButtonNavigate onPress={handleNewBalance}>
                     <NewBalances size={30} />
