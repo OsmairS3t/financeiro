@@ -16,5 +16,4 @@ export const Container = styled(TextInput)`
     border-width: 1px;
     border-color: ${({ theme })=> theme.COLORS.BORDER_INPUT};
     padding: 16px;
-    margin-top: 10px;
 `;

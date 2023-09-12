@@ -3,6 +3,14 @@
     "name": "financeiro",
     "slug": "financeiro",
     "version": "1.0.0",
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "photosPermission": "The app accesses your photos to let your sahre them with"
+        }
+      ]
+    ],
     "assetBundlePatterns": [
       "**/*"
     ]

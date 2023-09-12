@@ -1,6 +1,6 @@
 import styled from "styled-components/native";
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { List, Plus } from 'phosphor-react-native'
+import { Calendar, ListDashes, Plus } from 'phosphor-react-native'
+import { TouchableOpacity } from 'react-native'
 
 export const Container = styled.SafeAreaView`
     background-color: ${({ theme }) => theme.COLORS.BG_SCREEN};
@@ -12,21 +12,24 @@ export const GroupButtonsHeader = styled.View`
     justify-content: space-between;
     align-items: center;
     margin-bottom: 16px;
+    padding: 0 10px;
 `;
 
-export const ButtonNavigate = styled.TouchableOpacity`
-    padding-left: 5px;
-    padding-right: 5px;
-    border-radius: 5px;
-    min-height: 30px;
-    max-height: 30px;
+export const ButtonNavigate = styled(TouchableOpacity)`
+    padding: 5px;
 `;
 
 export const GroupInput = styled.View`
     width: 50%;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
 `;
 
-export const ButtonDate = styled.Pressable`
+export const ButtonDate = styled(TouchableOpacity)`
     padding: 10px;
     border-width: 1px;
     border-style: solid;
@@ -34,6 +37,11 @@ export const ButtonDate = styled.Pressable`
     border-color: ${({ theme }) => theme.COLORS.BORDER_INPUT};
     background-color: ${({ theme }) => theme.COLORS.BG_INPUT};
 `;
+
+export const IconDate = styled(Calendar).attrs(({theme})=>({
+    size: 36,
+    color: theme.COLORS.BR_BLOCK
+}))``;
 
 export const GroupGraphic = styled.View`
     flex-direction: row;
@@ -63,7 +71,7 @@ export const ContainerGraphic = styled.View`
     align-items: center;
 `;
 
-export const ListBalances = styled(List)``;
+export const ListBalances = styled(ListDashes)``;
 
 export const NewBalances = styled(Plus)``;
 

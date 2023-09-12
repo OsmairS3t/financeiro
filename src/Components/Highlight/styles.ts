@@ -1,6 +1,5 @@
-import { TouchableOpacity } from 'react-native'
 import styled from "styled-components/native";
-import { CaretLeft } from 'phosphor-react-native'
+import { ArrowLeft } from 'phosphor-react-native'
 
 type Props ={
     colorBackground?: string;
@@ -16,7 +15,7 @@ export const ButtonHighlightIcon = styled.TouchableOpacity`
     width: 10px;
 `;
 
-export const Icon = styled(CaretLeft).attrs(({theme})=>({
+export const Icon = styled(ArrowLeft).attrs(({theme})=>({
     size: 30,
     color: theme.COLORS.ICON_LIST,
 }))``;
@@ -29,5 +28,6 @@ export const GroupTitle = styled.View`
 `;
 
 export const Title = styled.Text`
-    font-size: 24px;
+    font-size: ${({ theme }) => theme.FONT_SIZE.LG}px;
+    font-family: ${({ theme }) => theme.FONT_FAMILY.BOLD};
 `;

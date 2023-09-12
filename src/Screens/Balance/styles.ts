@@ -1,6 +1,6 @@
 import styled from 'styled-components/native'
-import { CaretLeft } from 'phosphor-react-native'
-import { Pressable } from 'react-native';
+import { Camera, Image } from 'phosphor-react-native'
+import { Pressable, Image as Img } from 'react-native';
 
 type PropsSelectEdit = {
     isEmpty: boolean;
@@ -10,22 +10,24 @@ type PropsText = {
     isBold?: boolean;
 }
 
+type PropsBox = {
+    size?: number;
+}
+
 export const Container = styled.View`
     flex: 1;
     justify-content: space-between;
     background-color: ${({ theme }) => theme.COLORS.BG_SCREEN};
+    padding-left: 20px;
+    padding-right: 20px;
 `;
 
 export const Form = styled.View`
+    flex: 1;
+    width: 100%;
     flex-direction: column;
     justify-content: space-between;
     align-items: flex-start;
-    padding: 10px;
-`;
-
-export const ContainerButton = styled.View`
-    width: 100%;
-    padding: 20px;
 `;
 
 export const GroupSwitch = styled.View`
@@ -62,35 +64,56 @@ export const TextButtonSelectOpen = styled.Text<PropsSelectEdit>`
     font-size: ${({ theme }) => theme.FONT_SIZE.MD}px;
 `;
 
-export const GroupImage = styled.View`
-    flex-direction: row;
-    justify-content: flex-start;
-    gap: 10px;
-`;
+export const ModalView = styled.Modal``;
 
-export const GroupButton = styled.View`
+export const GroupImage = styled.View`
     flex-direction: column;
     justify-content: flex-start;
     gap: 10px;
 `;
 
-export const ModalView = styled.Modal``;
+export const GroupButton = styled.View`
+    width: 100%;
+    flex-direction: row;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 4px;
+`;
 
-export const BtnImage = styled.Pressable`
-    width: 100px;
-    height: 80px;
-    padding: 10px;
+export const PhotoImage = styled.View`
+    width: 100%;
+    display: flex;
+    flex-direction: row;
     justify-content: center;
     align-items: center;
-    border-width: 1px;
-    border-style: dotted;
-    background-color: ${({ theme }) => theme.COLORS.BG_BUTTON};
-    `;
+`;
 
-export const BtnImageText = styled.Text`
-    text-align: center;
-    font-size: ${({ theme }) => theme.FONT_SIZE.SM}px;
-    color: ${({ theme }) => theme.COLORS.TITLE_BUTTON};
+export const ImgCapture = styled(Img)`
+    width: 280px;
+    height: 280px;
+`;
+
+export const BtnImage = styled.Pressable`
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+    justify-content: center;
+    align-items: center;
+    background-color: ${({ theme }) => theme.COLORS.BG_SCREEN};
+`;
+
+export const IconCamera = styled(Camera).attrs(({theme})=>({
+    size: 32,
+    color: theme.COLORS.ICON_LIST
+}))``;
+
+export const IconImage = styled(Image).attrs(({theme})=>({
+    size: 32,
+    color: theme.COLORS.ICON_LIST
+}))``;
+
+export const BoxInput = styled.View<PropsBox>`
+    width: ${({ size }) => size}%;
 `;
 
 export const TextButton = styled.Text`
@@ -99,3 +122,7 @@ export const TextButton = styled.Text`
     color: ${({ theme }) => theme.COLORS.TITLE_BUTTON};
 `;
 
+export const ContainerButton = styled.View`
+    width: 100%;
+    padding: 20px;
+`;

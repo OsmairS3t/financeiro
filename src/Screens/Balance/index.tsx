@@ -10,7 +10,8 @@ import Highlight from '@components/Highlight';
 import { Select } from '@components/Forms/Select';
 import { FormDataProps, InputForm } from '@components/Forms/InputForm';
 import { Button } from '@components/Forms/Button';
-import { Categories } from '@utils/database';
+import { Balances, Categories } from '@utils/database';
+import { NewNumber } from '@utils/functions';
 
 import {
     Container,
@@ -24,7 +25,11 @@ import {
     GroupImage,
     GroupButton,
     BtnImage,
-    BtnImageText,
+    IconCamera,
+    IconImage,
+    BoxInput,
+    PhotoImage,
+    ImgCapture,
     TextButton
 } from './styles';
 
@@ -35,13 +40,21 @@ const schema = Yup.object().shape({
 
 export function Balance() {
     const navigation = useNavigation();
+    const sequence = Balances.reduce(function (prev, current) {
+        return (prev.id > current.id) ? prev : current
+    })
+
     //form's variables
     const [idCategory, setIdCategory] = useState(0)
     const [category, setCategory] = useState('Selecione a Categoria')
     const [description, setDescription] = useState('')
     const [typeBalance, setTypeBalance] = useState<string>('income')
     const [price, setPrice] = useState(0)
-    const [dateBalance, setDateBalance] = useState('')
+    const [dateBalance, setDateBalance] = useState(Intl.DateTimeFormat('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    }).format(new Date()))
     const [imgComprove, setImgComprove] = useState<string>('/assets/farol.png')
 
     const [modalVisible, setModalVisible] = useState(false);
@@ -76,21 +89,20 @@ export function Balance() {
         }
     }, [idCategory])
 
-    async function LoadImage() {
-        if (Platform.OS !== 'web') {
-            const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
-            if (status !== 'granted') {
-                alert('Permission denied!')
-            }
-        }
-    }
+    // async function LoadImage() {
+    //     if (Platform.OS !== 'web') {
+    //         const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync()
+    //         if (status !== 'granted') {
+    //             alert('Permission denied!')
+    //         }
+    //     }
+    // }
 
     const PickImageLibrary = async () => {
-        LoadImage();
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [2, 4],
             quality: 1
         })
         console.log(result)
@@ -100,7 +112,7 @@ export function Balance() {
     }
 
     const PickImageCamera = async () => {
-        LoadImage();
+        //LoadImage();
         let permissionResult = await ImagePicker.requestCameraPermissionsAsync()
         if (permissionResult.granted === false) {
             alert("You've refused to allow this appp to access your camera!");
@@ -115,8 +127,9 @@ export function Balance() {
     }
 
     function handleSubmitBalance(form: FormDataProps) {
+        const sequencia = NewNumber(sequence.id)
         const data = {
-            id: 0,
+            id: sequencia,
             category: idCategory,
             description: form.description,
             typebalance: typeBalance,
@@ -130,31 +143,40 @@ export function Balance() {
     return (
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
             <Container>
-                <Form>
-                    <Highlight onPress={handleBack} title='Incluir Lançamentos' />
-                    <ButtonSelectOpen
-                        onPress={() => setModalVisible(true)}>
-                        <TextButtonSelectOpen isEmpty={isSelectEmpty}>
-                            {category}
-                        </TextButtonSelectOpen>
-                    </ButtonSelectOpen>
+                <Highlight onPress={handleBack} title='Incluir Lançamentos' />
 
-                    <InputForm
-                        name='description'
-                        control={control}
-                        error={errors.description && errors.description.message}
-                        placeholder='Descrição'
-                        autoCapitalize='characters'
-                        autoCorrect={false}
-                    />
-                    <InputForm
-                        name='price'
-                        control={control}
-                        error={errors.price && errors.price.message}
-                        placeholder='Valor'
-                        autoCapitalize='characters'
-                        keyboardType='numeric'
-                    />
+                <Form>
+                    <BoxInput size={100}>
+                        <ButtonSelectOpen
+                            onPress={() => setModalVisible(true)}>
+                            <TextButtonSelectOpen isEmpty={isSelectEmpty}>
+                                {category}
+                            </TextButtonSelectOpen>
+                        </ButtonSelectOpen>
+                    </BoxInput>
+
+                    <BoxInput size={100}>
+                        <InputForm
+                            name='description'
+                            control={control}
+                            error={errors.description && errors.description.message}
+                            placeholder='Descrição'
+                            autoCapitalize='characters'
+                            autoCorrect={false}
+                        />
+                    </BoxInput>
+
+                    <BoxInput size={50}>
+                        <InputForm
+                            name='price'
+                            control={control}
+                            error={errors.price && errors.price.message}
+                            placeholder='Valor'
+                            autoCapitalize='characters'
+                            keyboardType='numeric'
+                        />
+                    </BoxInput>
+
                     <GroupSwitch>
                         <TextSwitch isBold={true}>Tipo de movimento:</TextSwitch>
                         <TextSwitch>
@@ -171,19 +193,17 @@ export function Balance() {
 
                     <GroupImage>
                         <GroupButton>
+                            <TextSwitch isBold={true}>Incluir Comprovante:</TextSwitch>
                             <BtnImage onPress={PickImageLibrary}>
-                                <BtnImageText>Biblioteca</BtnImageText>
+                                <IconImage />
                             </BtnImage>
                             <BtnImage onPress={PickImageCamera}>
-                                <BtnImageText>Câmera</BtnImageText>
+                                <IconCamera />
                             </BtnImage>
                         </GroupButton>
-                        <Image source={{ uri: imgComprove }} style={{
-                            borderWidth: 1,
-                            borderColor: '#bbb',
-                            width: 260,
-                            height: 350
-                        }} />
+                        <PhotoImage>
+                            <ImgCapture source={{ uri: imgComprove }} />
+                        </PhotoImage>
                     </GroupImage>
 
                     <ModalView
@@ -201,8 +221,8 @@ export function Balance() {
                             setIsModalVisible={setModalVisible}
                         />
                     </ModalView>
-
                 </Form>
+
                 <ContainerButton>
                     <Button onPress={handleSubmit(handleSubmitBalance)}>
                         <TextButton>Incluir</TextButton>

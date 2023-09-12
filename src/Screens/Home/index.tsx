@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { FlatList, Button, Text, Pressable } from 'react-native';
+import { FlatList, TextInput, TouchableOpacity, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
 import { IResumeCategory } from '@utils/interfaces';
@@ -14,6 +14,7 @@ import {
     ListBalances,
     NewBalances,
     ButtonDate,
+    IconDate,
     GroupInput,
     GroupGraphic,
     ResumeGraphic,
@@ -27,20 +28,31 @@ import {
 export function Home() {
     const navigation = useNavigation();
     const [date, setDate] = useState(new Date())
-    const [mode, setMode] = useState('date');
     const [isOpen, setIsOpen] = useState(false)
-
+    const [dateFormated, setDateFormated] = useState(Intl.DateTimeFormat('pt-BR', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric'
+    }).format(date))
     const [totalBalance, setTotalBalance] = useState(0)
     const [resumes, setResumes] = useState<IResumeCategory[]>([])
     const [dateBalance, setDateBalance] = useState('01/08/2023')
 
-    function onChange(selectedDate: Date) {
-        setIsOpen(false)
-        setDate(selectedDate);
+    function onChange(event: DateTimePickerEvent, selectedDate: Date) {
+        if (event.type === 'set') {
+            const currentDate = selectedDate
+            setDate(currentDate);
+            if (Platform.OS !== 'web') {
+                showDatepicker()
+                setDate(currentDate);
+            }
+        } else {
+            showDatepicker()
+        }
     };
 
     const showDatepicker = () => {
-        setIsOpen(true)
+        setIsOpen(!isOpen)
     };
 
     function handleListBalance() {
@@ -97,58 +109,76 @@ export function Home() {
     }, [dateBalance])
 
     return (
-        <Container>
-            <GroupButtonsHeader>
-                <ButtonNavigate onPress={handleListBalance}>
-                    <ListBalances size={30} />
-                </ButtonNavigate>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+            <Container>
+                <GroupButtonsHeader>
+                    <ButtonNavigate onPress={handleListBalance}>
+                        <ListBalances size={32} />
+                    </ButtonNavigate>
 
-                <GroupInput>
-                    <ButtonDate onPress={showDatepicker}>
-                        <Text>{date.toDateString()}</Text>
-                    </ButtonDate>
-                    {isOpen && (
-                        <DateTimePicker
-                            display='spinner'
-                            value={date}
-                            mode='date'
-                            locale='pt-BR'
-                            onChange={() => onChange(date)}
+                    <GroupInput>
+                        <TextInput
+                            placeholder={dateBalance}
+                            id='dateBalance'
+                            value={dateBalance}
+                            onChangeText={setDateBalance}
+                            keyboardType='numeric'
+                            style={{
+                                backgroundColor: '#eee',
+                                padding: 10,
+                                height: 40,
+                                borderRadius: 5,
+                                borderWidth: 1,
+                                borderColor: '#aaa',
+                                textAlign: 'center'
+                            }}
                         />
-                    )}
-                </GroupInput>
-                <ButtonNavigate onPress={handleNewBalance}>
-                    <NewBalances size={30} />
-                </ButtonNavigate>
-            </GroupButtonsHeader>
+                        <TouchableOpacity onPress={showDatepicker}>
+                            <IconDate />
+                        </TouchableOpacity>
+                        {isOpen && (
+                            <DateTimePicker
+                                display='spinner'
+                                value={date}
+                                mode='date'
+                                onChange={(event) => onChange(event, date)}
+                            />
+                        )}
+                    </GroupInput>
 
-            <GroupGraphic>
-                <ResumeGraphic>
-                    <TextResumeGraphic>
-                        {Intl.NumberFormat('pt-BR', {
-                            style: 'currency',
-                            currency: 'BRL'
-                        }).format(resumeTotalBalance())}
-                    </TextResumeGraphic>
-                    <SubTextResumeGraphic>Total Balanço</SubTextResumeGraphic>
-                    <SubTextResumeGraphic>(Geral)</SubTextResumeGraphic>
-                </ResumeGraphic>
-                <ContainerGraphic>
-                    <Graphic resumesCategory={resumes} />
-                </ContainerGraphic>
-            </GroupGraphic>
+                    <ButtonNavigate onPress={handleNewBalance}>
+                        <NewBalances size={32} />
+                    </ButtonNavigate>
+                </GroupButtonsHeader>
 
-            <ListRsume>
-                <TitleTransactions>RESUMO DO DIA {dateBalance}</TitleTransactions>
-                <FlatList
-                    data={resumes}
-                    keyExtractor={item => item.idcategory.toString()}
-                    renderItem={({ item }) => (
-                        <ResumeCategory balanceCategory={item} />
-                    )}
-                    showsVerticalScrollIndicator={false}
-                />
-            </ListRsume>
-        </Container>
+                <GroupGraphic>
+                    <ResumeGraphic>
+                        <TextResumeGraphic>
+                            {Intl.NumberFormat('pt-BR', {
+                                style: 'currency',
+                                currency: 'BRL'
+                            }).format(resumeTotalBalance())}
+                        </TextResumeGraphic>
+                        <SubTextResumeGraphic>Total Balanço</SubTextResumeGraphic>
+                        <SubTextResumeGraphic>(Geral)</SubTextResumeGraphic>
+                    </ResumeGraphic>
+                    <ContainerGraphic>
+                        <Graphic resumesCategory={resumes} />
+                    </ContainerGraphic>
+                </GroupGraphic>
+
+                <ListRsume>
+                    <TitleTransactions>RESUMO DO DIA {dateBalance}</TitleTransactions>
+                    <FlatList
+                        data={resumes}
+                        keyExtractor={item => item.idcategory.toString()}
+                        renderItem={({ item }) => (
+                            <ResumeCategory balanceCategory={item} />
+                        )}
+                        showsVerticalScrollIndicator={false}
+                    />
+                </ListRsume>
+            </Container>
+        </TouchableWithoutFeedback>
     )
 }
