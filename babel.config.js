@@ -14,11 +14,7 @@ module.exports = function(api) {
             '@storage': './src/Storage',
             '@utils': './src/Utils',
           }
-        },
-        ['module:react-native-dotenv', {
-          'moduleName': '@env',
-          'allowUndefined': false
-        }]
+        }
       ],
     ]
   };

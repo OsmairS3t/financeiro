@@ -56,7 +56,8 @@ export function Home() {
     };
 
     function handleListBalance() {
-        navigation.navigate('listbalance')
+        navigation.navigate('signin')
+        //navigation.navigate('listbalance')
     }
 
     function handleNewBalance() {

@@ -1,13 +1,15 @@
 import { PressableProps } from 'react-native'
 
-import { Container } from './styles'
+import { Container, Title } from './styles'
 
-interface Props extends PressableProps { }
+interface Props extends PressableProps {
+  title?: string;
+}
 
-export function Button({ ...rest }: Props) {
+export function Button({ title, ...rest }: Props) {
   return (
     <Container {...rest}>
-
+      {title && <Title>{title}</Title>}
     </Container>
   )
 }

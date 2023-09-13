@@ -7,7 +7,6 @@ import { Loading } from '@components/Loading';
 import { StatusBar } from 'expo-status-bar';
 import Header from '@components/Header';
 import Footer from '@components/Footer';
-import { ANDROID_CLIENT_ID } from '@env'
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold });

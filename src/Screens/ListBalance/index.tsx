@@ -3,7 +3,6 @@ import { useNavigation } from '@react-navigation/native';
 import { IBalance } from '@utils/interfaces';
 import { Balances } from '@utils/database'
 import Highlight from '@components/Highlight';
-import { Switcher } from '@components/Forms/Swichter';
 import { FlatList, Switch } from 'react-native'
 import Transaction from '@components/Transaction';
 

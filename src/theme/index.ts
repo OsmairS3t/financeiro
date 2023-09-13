@@ -11,7 +11,7 @@ export default {
       ICON_HEADER: '#FFFFFF',
       ICON_LIST: '#000000',
      
-      TITLE_APP: '#898989',
+      TITLE_APP: '#FFFFFF',
       TITLE_SCREEN: '#000000',
       TITLE_BUTTON: '#FFFFFF',
       
