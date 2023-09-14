@@ -2,8 +2,13 @@ import { useRoute } from '@react-navigation/native'
 import { useNavigation } from '@react-navigation/native';
 import Highlight from '@components/Highlight';
 import { Categories, Balances } from '@utils/database';
+import { useEffect, useState } from 'react';
+import { IBalance } from '@utils/interfaces';
+import Header from '@components/Header';
+
 import {
     Container,
+    Content,
     Title,
     GroupBlock,
     Block,
@@ -12,8 +17,6 @@ import {
     BlockSummary,
     TextResume,
 } from './styles'
-import { useEffect, useState } from 'react';
-import { IBalance } from '@utils/interfaces';
 
 type RouteParams = {
     idcategory: number;
@@ -47,48 +50,51 @@ export function DetailCategory() {
 
     return (
         <Container>
-            <Highlight
-                onPress={handleBack}
-                title={nameCategory}
-                colorBG={colorCategory}
-            />
-            <Title>Todos os lançamentos de {datecategory}</Title>
-            {balances.map(balance => (
-                <GroupBlock key={balance.id}>
-                    <Block>
-                        <TitleBlock>Descrição:</TitleBlock>
-                        <TextBlock>{balance.name}</TextBlock>
-                    </Block>
-                    <Block>
-                        <TitleBlock>Tipo:</TitleBlock>
-                        <TextBlock>
-                            {balance.typebalance === 'income' ?
-                                'Entrada' : 'Saída'
-                            }
-                        </TextBlock>
-                    </Block>
-                    <Block>
-                        <TitleBlock>Valor:</TitleBlock>
-                        <TextBlock>
-                            {Intl.NumberFormat('pt-BR', {
+            <Header />
+            <Content>
+                <Highlight
+                    onPress={handleBack}
+                    title={nameCategory}
+                    colorBG={colorCategory}
+                />
+                <Title>Todos os lançamentos de {datecategory}</Title>
+                {balances.map(balance => (
+                    <GroupBlock key={balance.id}>
+                        <Block>
+                            <TitleBlock>Descrição:</TitleBlock>
+                            <TextBlock>{balance.name}</TextBlock>
+                        </Block>
+                        <Block>
+                            <TitleBlock>Tipo:</TitleBlock>
+                            <TextBlock>
+                                {balance.typebalance === 'income' ?
+                                    'Entrada' : 'Saída'
+                                }
+                            </TextBlock>
+                        </Block>
+                        <Block>
+                            <TitleBlock>Valor:</TitleBlock>
+                            <TextBlock>
+                                {Intl.NumberFormat('pt-BR', {
+                                    style: 'currency',
+                                    currency: 'BRL'
+                                }).format(balance.price)}
+                            </TextBlock>
+                        </Block>
+                        <Block>
+                            <TitleBlock>Comprovante:</TitleBlock>
+                            <TextBlock>{balance.file}</TextBlock>
+                        </Block>
+                        <BlockSummary>
+                            <TextResume>{Intl.NumberFormat('pt-BR', {
                                 style: 'currency',
                                 currency: 'BRL'
-                            }).format(balance.price)}
-                        </TextBlock>
-                    </Block>
-                    <Block>
-                        <TitleBlock>Comprovante:</TitleBlock>
-                        <TextBlock>{balance.file}</TextBlock>
-                    </Block>
-                    <BlockSummary>
-                        <TextResume>{Intl.NumberFormat('pt-BR', {
-                            style: 'currency',
-                            currency: 'BRL'
-                        }).format(sumCategory + balance.price)}
-                        </TextResume>
-                    </BlockSummary>
-                </GroupBlock>
-            ))}
+                            }).format(sumCategory + balance.price)}
+                            </TextResume>
+                        </BlockSummary>
+                    </GroupBlock>
+                ))}
+            </Content>
         </Container>
     )
 }

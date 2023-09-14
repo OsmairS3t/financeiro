@@ -1,15 +1,24 @@
 import React from 'react';
-
-import { Container, 
-    Logo, 
-    TextGroup, 
-    Title, 
-    SubTitle, 
-    IconSignOut
- } from './styles';
+import { useNavigation } from '@react-navigation/native';
 import logoLuzJovem from '@assets/luzjovem.png'
 
+import {
+    Container,
+    Logo,
+    TextGroup,
+    Title,
+    SubTitle,
+    ButtonSignOut,
+    IconSignOut
+} from './styles';
+
 export default function Header() {
+    const navigation = useNavigation();
+
+    function handleSignOut() {
+        navigation.navigate('signin')
+    }
+
     return (
         <Container>
             <Logo source={logoLuzJovem} />
@@ -17,7 +26,9 @@ export default function Header() {
                 <Title>TESOURARIA</Title>
                 <SubTitle>Luz Jovem Anápolis</SubTitle>
             </TextGroup>
-            <IconSignOut size={35} color='#FFFFFF' />
+            <ButtonSignOut onPress={handleSignOut}>
+                <IconSignOut size={35} color='#FFFFFF' />
+            </ButtonSignOut>
         </Container>
     )
 }

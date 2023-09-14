@@ -18,8 +18,12 @@ export const Container = styled.View`
     flex: 1;
     justify-content: space-between;
     background-color: ${({ theme }) => theme.COLORS.BG_SCREEN};
-    padding-left: 20px;
-    padding-right: 20px;
+`;
+
+export const Content = styled.View`
+    flex: 1;
+    padding-left: 10px;
+    padding-right: 10px;
 `;
 
 export const Form = styled.View`

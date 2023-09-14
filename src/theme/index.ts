@@ -21,6 +21,7 @@ export default {
       
       BORDER_INPUT: '#29292E',
       BORDER_BLOCK: '#000000',
+      BORDER_BUTTON: '#007b8c',
 
       ERROR: '#FF1122'
     },

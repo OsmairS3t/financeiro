@@ -18,6 +18,10 @@ export const Logo = styled.Image`
     height: 80px;
 `;  
 
+export const ButtonSignOut = styled.TouchableOpacity`
+    padding: 5px;
+`;
+
 export const IconSignOut = styled(SignOut)`
     color: ${({ theme }) => theme.COLORS.ICON_HEADER};
 `;

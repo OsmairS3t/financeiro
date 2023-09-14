@@ -1,7 +1,11 @@
 import styled from 'styled-components/native'
 
 export const Container = styled.View`
-    padding: 15px;
+`;
+
+export const Content = styled.View`
+    padding-left: 10px;
+    padding-right: 10px;
 `;
 
 export const Title = styled.Text`

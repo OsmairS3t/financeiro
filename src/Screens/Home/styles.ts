@@ -4,7 +4,6 @@ import { TouchableOpacity } from 'react-native'
 
 export const Container = styled.SafeAreaView`
     background-color: ${({ theme }) => theme.COLORS.BG_SCREEN};
-    padding-top: 5px;
 `;
 
 export const GroupButtonsHeader = styled.View`

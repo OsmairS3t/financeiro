@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Platform, Switch, TouchableWithoutFeedback, Image, Keyboard } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
 import { useForm } from 'react-hook-form'
@@ -15,6 +17,7 @@ import { NewNumber } from '@utils/functions';
 
 import {
     Container,
+    Content,
     Form,
     ContainerButton,
     ButtonSelectOpen,
@@ -32,6 +35,7 @@ import {
     ImgCapture,
     TextButton
 } from './styles';
+import Header from '@components/Header';
 
 const schema = Yup.object().shape({
     description: Yup.string().required('A descrição é necessária.'),
@@ -141,95 +145,101 @@ export function Balance() {
     }
 
     return (
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-            <Container>
-                <Highlight onPress={handleBack} title='Incluir Lançamentos' />
+        <SafeAreaView style={{ flex: 1 }}>
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <Container>
+                    <Header />
+                    <Content>
+                        <Highlight onPress={handleBack} title='Incluir Lançamentos' />
 
-                <Form>
-                    <BoxInput size={100}>
-                        <ButtonSelectOpen
-                            onPress={() => setModalVisible(true)}>
-                            <TextButtonSelectOpen isEmpty={isSelectEmpty}>
-                                {category}
-                            </TextButtonSelectOpen>
-                        </ButtonSelectOpen>
-                    </BoxInput>
+                        <Form>
+                            <BoxInput size={100}>
+                                <ButtonSelectOpen
+                                    onPress={() => setModalVisible(true)}>
+                                    <TextButtonSelectOpen isEmpty={isSelectEmpty}>
+                                        {category}
+                                    </TextButtonSelectOpen>
+                                </ButtonSelectOpen>
+                            </BoxInput>
 
-                    <BoxInput size={100}>
-                        <InputForm
-                            name='description'
-                            control={control}
-                            error={errors.description && errors.description.message}
-                            placeholder='Descrição'
-                            autoCapitalize='characters'
-                            autoCorrect={false}
-                        />
-                    </BoxInput>
+                            <BoxInput size={100}>
+                                <InputForm
+                                    name='description'
+                                    control={control}
+                                    error={errors.description && errors.description.message}
+                                    placeholder='Descrição'
+                                    autoCapitalize='characters'
+                                    autoCorrect={false}
+                                />
+                            </BoxInput>
 
-                    <BoxInput size={50}>
-                        <InputForm
-                            name='price'
-                            control={control}
-                            error={errors.price && errors.price.message}
-                            placeholder='Valor'
-                            autoCapitalize='characters'
-                            keyboardType='numeric'
-                        />
-                    </BoxInput>
+                            <BoxInput size={50}>
+                                <InputForm
+                                    name='price'
+                                    control={control}
+                                    error={errors.price && errors.price.message}
+                                    placeholder='Valor'
+                                    autoCapitalize='characters'
+                                    keyboardType='numeric'
+                                />
+                            </BoxInput>
 
-                    <GroupSwitch>
-                        <TextSwitch isBold={true}>Tipo de movimento:</TextSwitch>
-                        <TextSwitch>
-                            {typeTransformed}
-                        </TextSwitch>
-                        <Switch
-                            trackColor={{ false: '#792ec5', true: '#4b86eb' }}
-                            thumbColor={isEnabled ? '#777' : '#f4f3f4'}
-                            ios_backgroundColor="#3e3e3e"
-                            onValueChange={handleSwitch}
-                            value={isEnabled}
-                        />
-                    </GroupSwitch>
+                            <GroupSwitch>
+                                <TextSwitch isBold={true}>Tipo de movimento:</TextSwitch>
+                                <TextSwitch>
+                                    {typeTransformed}
+                                </TextSwitch>
+                                <Switch
+                                    trackColor={{ false: '#792ec5', true: '#4b86eb' }}
+                                    thumbColor={isEnabled ? '#777' : '#f4f3f4'}
+                                    ios_backgroundColor="#3e3e3e"
+                                    onValueChange={handleSwitch}
+                                    value={isEnabled}
+                                />
+                            </GroupSwitch>
 
-                    <GroupImage>
-                        <GroupButton>
-                            <TextSwitch isBold={true}>Incluir Comprovante:</TextSwitch>
-                            <BtnImage onPress={PickImageLibrary}>
-                                <IconImage />
-                            </BtnImage>
-                            <BtnImage onPress={PickImageCamera}>
-                                <IconCamera />
-                            </BtnImage>
-                        </GroupButton>
-                        <PhotoImage>
-                            <ImgCapture source={{ uri: imgComprove }} />
-                        </PhotoImage>
-                    </GroupImage>
+                            <GroupImage>
+                                <GroupButton>
+                                    <TextSwitch isBold={true}>Incluir Comprovante:</TextSwitch>
+                                    <BtnImage onPress={PickImageLibrary}>
+                                        <IconImage />
+                                    </BtnImage>
+                                    <BtnImage onPress={PickImageCamera}>
+                                        <IconCamera />
+                                    </BtnImage>
+                                </GroupButton>
+                                <PhotoImage>
+                                    <ImgCapture source={{ uri: imgComprove }} />
+                                </PhotoImage>
+                            </GroupImage>
 
-                    <ModalView
-                        animationType="fade"
-                        transparent={true}
-                        visible={modalVisible}
-                        onRequestClose={() => {
-                            setModalVisible(!modalVisible);
-                        }}>
-                        <Select
-                            list={Categories}
-                            setValue={setIdCategory}
-                            setLabel={setCategory}
-                            isModalVisible={modalVisible}
-                            setIsModalVisible={setModalVisible}
-                        />
-                    </ModalView>
-                </Form>
+                            <ModalView
+                                animationType="fade"
+                                transparent={true}
+                                visible={modalVisible}
+                                onRequestClose={() => {
+                                    setModalVisible(!modalVisible);
+                                }}>
+                                <Select
+                                    list={Categories}
+                                    setValue={setIdCategory}
+                                    setLabel={setCategory}
+                                    isModalVisible={modalVisible}
+                                    setIsModalVisible={setModalVisible}
+                                />
+                            </ModalView>
+                        </Form>
 
-                <ContainerButton>
-                    <Button onPress={handleSubmit(handleSubmitBalance)}>
-                        <TextButton>Incluir</TextButton>
-                    </Button>
-                </ContainerButton>
-            </Container>
-        </TouchableWithoutFeedback>
+                        <ContainerButton>
+                            <Button
+                                title='Incluir'
+                                onPress={handleSubmit(handleSubmitBalance)}
+                            />
+                        </ContainerButton>
+                    </Content>
+                </Container>
+            </TouchableWithoutFeedback>
+        </SafeAreaView>
     )
 }
 
