@@ -1,5 +1,11 @@
 import { useState, useEffect } from 'react';
-import { FlatList, TextInput, TouchableOpacity, Platform, TouchableWithoutFeedback, Keyboard } from 'react-native';
+import { 
+    FlatList, 
+    TextInput, 
+    TouchableOpacity, 
+    Platform, 
+    TouchableWithoutFeedback, 
+    Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
@@ -7,13 +13,14 @@ import { IResumeCategory } from '@utils/interfaces';
 import { Balances, Categories } from '@utils/database';
 
 import Header from '@components/Header';
+import Footer from '@components/Footer';
 import ResumeCategory from '@components/ResumeCategory';
 import { Graphic } from '@components/Graphic';
 
 import {
     Container,
+    Content,
     GroupButtonsHeader,
-    ButtonNavigate,
     ListBalances,
     NewBalances,
     ButtonDate,
@@ -25,6 +32,10 @@ import {
     SubTextResumeGraphic,
     ContainerGraphic,
     ListRsume,
+    GroupButton,
+    BtnList,
+    BtnAdd,
+    TextButton,
     TitleTransactions
 } from './styles';
 
@@ -117,73 +128,79 @@ export function Home() {
             <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
                 <Container>
                     <Header />
-                    <GroupButtonsHeader>
-                        <ButtonNavigate onPress={handleListBalance}>
-                            <ListBalances size={32} />
-                        </ButtonNavigate>
-
-                        <GroupInput>
-                            <TextInput
-                                placeholder={dateBalance}
-                                id='dateBalance'
-                                value={dateBalance}
-                                onChangeText={setDateBalance}
-                                keyboardType='numeric'
-                                style={{
-                                    backgroundColor: '#eee',
-                                    padding: 10,
-                                    height: 40,
-                                    borderRadius: 5,
-                                    borderWidth: 1,
-                                    borderColor: '#aaa',
-                                    textAlign: 'center'
-                                }}
-                            />
-                            <TouchableOpacity onPress={showDatepicker}>
-                                <IconDate />
-                            </TouchableOpacity>
-                            {isOpen && (
-                                <DateTimePicker
-                                    display='spinner'
-                                    value={date}
-                                    mode='date'
-                                    onChange={(event) => onChange(event, date)}
+                    <Content>
+                        <GroupButtonsHeader>
+                            <GroupInput>
+                                <TextInput
+                                    placeholder={dateBalance}
+                                    id='dateBalance'
+                                    value={dateBalance}
+                                    onChangeText={setDateBalance}
+                                    keyboardType='numeric'
+                                    style={{
+                                        backgroundColor: '#eee',
+                                        padding: 10,
+                                        height: 40,
+                                        borderRadius: 5,
+                                        borderWidth: 1,
+                                        borderColor: '#aaa',
+                                        textAlign: 'center'
+                                    }}
                                 />
-                            )}
-                        </GroupInput>
+                                <TouchableOpacity onPress={showDatepicker}>
+                                    <IconDate />
+                                </TouchableOpacity>
+                                {isOpen && (
+                                    <DateTimePicker
+                                        display='spinner'
+                                        value={date}
+                                        mode='date'
+                                        onChange={(event) => onChange(event, date)}
+                                    />
+                                )}
+                            </GroupInput>
+                        </GroupButtonsHeader>
 
-                        <ButtonNavigate onPress={handleNewBalance}>
-                            <NewBalances size={32} />
-                        </ButtonNavigate>
-                    </GroupButtonsHeader>
+                        <GroupGraphic>
+                            <ResumeGraphic>
+                                <TextResumeGraphic>
+                                    {Intl.NumberFormat('pt-BR', {
+                                        style: 'currency',
+                                        currency: 'BRL'
+                                    }).format(totalBalance)}
+                                </TextResumeGraphic>
+                                <SubTextResumeGraphic>Total Balanço</SubTextResumeGraphic>
+                            </ResumeGraphic>
+                            <ContainerGraphic>
+                                <Graphic resumesCategory={resumes} />
+                            </ContainerGraphic>
+                        </GroupGraphic>
 
-                    <GroupGraphic>
-                        <ResumeGraphic>
-                            <TextResumeGraphic>
-                                {Intl.NumberFormat('pt-BR', {
-                                    style: 'currency',
-                                    currency: 'BRL'
-                                }).format(resumeTotalBalance())}
-                            </TextResumeGraphic>
-                            <SubTextResumeGraphic>Total Balanço</SubTextResumeGraphic>
-                            <SubTextResumeGraphic>(Geral)</SubTextResumeGraphic>
-                        </ResumeGraphic>
-                        <ContainerGraphic>
-                            <Graphic resumesCategory={resumes} />
-                        </ContainerGraphic>
-                    </GroupGraphic>
+                        <ListRsume>
+                            <TitleTransactions>RESUMO DO DIA {dateBalance}</TitleTransactions>
+                            <FlatList
+                                data={resumes}
+                                keyExtractor={item => item.idcategory.toString()}
+                                renderItem={({ item }) => (
+                                    <ResumeCategory balanceCategory={item} />
+                                )}
+                                showsVerticalScrollIndicator={false}
+                            />
+                        </ListRsume>
+                        
+                        <GroupButton>
+                            <BtnList testID='Listar' onPress={handleListBalance}>
+                                <ListBalances size={22} />
+                                <TextButton>Listar</TextButton>
+                            </BtnList>
+                            <BtnAdd  onPress={handleNewBalance}>
+                                <NewBalances size={22} />
+                                <TextButton>Adicionar</TextButton>
+                            </BtnAdd>
+                        </GroupButton>
 
-                    <ListRsume>
-                        <TitleTransactions>RESUMO DO DIA {dateBalance}</TitleTransactions>
-                        <FlatList
-                            data={resumes}
-                            keyExtractor={item => item.idcategory.toString()}
-                            renderItem={({ item }) => (
-                                <ResumeCategory balanceCategory={item} />
-                            )}
-                            showsVerticalScrollIndicator={false}
-                        />
-                    </ListRsume>
+                    </Content>
+                    <Footer />
                 </Container>
             </TouchableWithoutFeedback>
         </SafeAreaView>

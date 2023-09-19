@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import {Alert} from 'react-native'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useForm, Controller } from 'react-hook-form'
 import * as Yup from 'yup'
@@ -14,7 +15,10 @@ import {
     Logo,
     Title,
     Form,
-    TextError
+    TextError,
+    BtnSocial,
+    IconBtnSocial,
+    TextBtnSocial
 } from './styles';
 
 type SignInProps = {
@@ -43,6 +47,10 @@ export function SignIn() {
         navigation.navigate('home')
     }
 
+    function handleLoginSocial() {
+        //Alert.alert('Você está logado')
+        navigation.navigate('home')
+    }
     return (
         <SafeAreaView style={{ flex: 1 }}>
             <Container>
@@ -90,6 +98,13 @@ export function SignIn() {
                         title="Entrar"
                         onPress={sendHome}
                     />
+
+                    <BtnSocial onPress={handleLoginSocial}>
+                        <IconBtnSocial source={require('@assets/google.png')} />
+                        <TextBtnSocial>
+                            Entre com Google
+                        </TextBtnSocial>
+                    </BtnSocial>
                 </Form>
             </Container>
         </SafeAreaView>

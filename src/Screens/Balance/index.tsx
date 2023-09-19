@@ -1,6 +1,12 @@
 import { useEffect, useState } from 'react';
-import { Platform, Switch, TouchableWithoutFeedback, Image, Keyboard } from 'react-native';
+import { 
+    Platform, 
+    Switch, 
+    TouchableWithoutFeedback, 
+    Alert, 
+    Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTheme } from 'styled-components';
 
 import { useNavigation } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
@@ -22,6 +28,7 @@ import {
     ContainerButton,
     ButtonSelectOpen,
     TextButtonSelectOpen,
+    IconButtonSelectOpen,
     ModalView,
     GroupSwitch,
     TextSwitch,
@@ -61,11 +68,12 @@ export function Balance() {
     }).format(new Date()))
     const [imgComprove, setImgComprove] = useState<string>('/assets/farol.png')
 
+    const theme = useTheme();
     const [modalVisible, setModalVisible] = useState(false);
     const [typeTransformed, setTypeTransformed] = useState('Entrada')
     const [isEnabled, setIsEnabled] = useState(false);
     const [isSelectEmpty, setIsSelectEmpty] = useState(false);
-    const { handleSubmit, control, formState: { errors } } = useForm<FormDataProps>({
+    const { handleSubmit, reset, control, formState: { errors } } = useForm<FormDataProps>({
         resolver: yupResolver(schema)
     });
 
@@ -130,6 +138,13 @@ export function Balance() {
         }
     }
 
+    function LimpaDadosForm() {
+        setCategory('Selecione a Categoria');
+        setTypeBalance('income')
+        handleSwitch()
+        reset();
+    }
+
     function handleSubmitBalance(form: FormDataProps) {
         const sequencia = NewNumber(sequence.id)
         const data = {
@@ -142,6 +157,8 @@ export function Balance() {
             file: imgComprove
         }
         console.log(data)
+        Alert.alert('Dados incluídos com sucesso!');
+        LimpaDadosForm()
     }
 
     return (
@@ -155,10 +172,11 @@ export function Balance() {
                         <Form>
                             <BoxInput size={100}>
                                 <ButtonSelectOpen
-                                    onPress={() => setModalVisible(true)}>
+                                    onPress={() => setModalVisible(!modalVisible)}>
                                     <TextButtonSelectOpen isEmpty={isSelectEmpty}>
                                         {category}
                                     </TextButtonSelectOpen>
+                                    <IconButtonSelectOpen />
                                 </ButtonSelectOpen>
                             </BoxInput>
 
@@ -186,16 +204,14 @@ export function Balance() {
 
                             <GroupSwitch>
                                 <TextSwitch isBold={true}>Tipo de movimento:</TextSwitch>
-                                <TextSwitch>
-                                    {typeTransformed}
-                                </TextSwitch>
                                 <Switch
-                                    trackColor={{ false: '#792ec5', true: '#4b86eb' }}
-                                    thumbColor={isEnabled ? '#777' : '#f4f3f4'}
-                                    ios_backgroundColor="#3e3e3e"
+                                    trackColor={{ false: theme.COLORS.SWITH_FALSE, true: theme.COLORS.SWITH_TRUE }}
+                                    thumbColor={isEnabled ? theme.COLORS.SWITH_ENABLED : theme.COLORS.SWITH_DISABLED}
+                                    ios_backgroundColor={theme.COLORS.SWITH_IOS}
                                     onValueChange={handleSwitch}
                                     value={isEnabled}
                                 />
+                                <TextSwitch>{typeTransformed}</TextSwitch>
                             </GroupSwitch>
 
                             <GroupImage>

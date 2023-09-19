@@ -1,5 +1,5 @@
 import styled from 'styled-components/native'
-import { Camera, Image } from 'phosphor-react-native'
+import { Camera, Image, CaretDown } from 'phosphor-react-native'
 import { Pressable, Image as Img } from 'react-native';
 
 type PropsSelectEdit = {
@@ -22,8 +22,7 @@ export const Container = styled.View`
 
 export const Content = styled.View`
     flex: 1;
-    padding-left: 10px;
-    padding-right: 10px;
+    padding: 10px;
 `;
 
 export const Form = styled.View`
@@ -44,20 +43,22 @@ export const TextSwitch = styled.Text<PropsText>`
     text-align: right;
     padding-right: 5px;
     color: ${({ theme }) => theme.COLORS.TEXT_DEFAULT};
+    font-size: ${({ theme }) => theme.FONT_SIZE.LG}px;
     font-weight: ${({ isBold }) => isBold ? "bold" : "normal"};
 `;
 
 export const ButtonSelectOpen = styled(Pressable)`
     margin-top: 10px;
-    padding: 10px;
+    padding: 10px 15px;
     width: 100%;
     min-height: 56px;
     max-height: 56px;
     border-radius: 10px;
     border-width: 1px;
     border-color: ${({ theme }) => theme.COLORS.BORDER_BLOCK};
-    justify-content: center;
-    align-items: flex-start;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
     background-color: ${({ theme }) => theme.COLORS.BG_INPUT};
 `;
 
@@ -67,6 +68,8 @@ export const TextButtonSelectOpen = styled.Text<PropsSelectEdit>`
     font-family: ${({ theme }) => theme.FONT_FAMILY.REGULAR};
     font-size: ${({ theme }) => theme.FONT_SIZE.MD}px;
 `;
+
+export const IconButtonSelectOpen = styled(CaretDown)``;
 
 export const ModalView = styled.Modal``;
 
@@ -118,6 +121,7 @@ export const IconImage = styled(Image).attrs(({theme})=>({
 
 export const BoxInput = styled.View<PropsBox>`
     width: ${({ size }) => size}%;
+    margin-bottom: 10px;
 `;
 
 export const TextButton = styled.Text`

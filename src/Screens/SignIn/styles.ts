@@ -1,4 +1,5 @@
 import styled from 'styled-components/native'
+import { Button } from 'react-native'
 
 export const Container = styled.View`
     flex: 1;
@@ -35,4 +36,28 @@ export const TextButton = styled.Text`
 export const TextError = styled.Text`
     font-size: ${({ theme }) =>theme.FONT_SIZE.SM}px;
     color: ${({ theme }) =>theme.COLORS.ERROR};
+`;
+
+export const BtnSocial = styled.Pressable`
+    width: fit-content;
+    height: 55px;
+    padding: 0px;
+    flex-direction: row;
+    justify-content: flex-start;
+    align-items: center;
+    border-radius: 10px;
+    background-color: ${({ theme})=>theme.COLORS.BG_BUTTON_SOCIAL};
+`;
+
+export const IconBtnSocial = styled.Image`
+    width: 50px;
+    height: 50px;
+    border-top-left-radius: 10px;
+    border-bottom-left-radius: 10px;
+`;
+
+export const TextBtnSocial = styled.Text`
+    margin-left: 30px;
+    font-family: ${({theme}) => theme.FONT_FAMILY.REGULAR};
+    color: ${({theme}) => theme.COLORS.TEXT_BLOCK};
 `;

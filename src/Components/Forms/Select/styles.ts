@@ -8,14 +8,14 @@ type PropsButton = {
 export const Container = styled.View`
     justify-content: 'center';
     align-items: 'center';
-    margin-top: 130px;
+    margin-top: 205px;
     margin-left: 10px;
     margin-right: 10px;
     border-radius: 10px;
     border-width: 1px;
     border-style: solid;
-    border-color: ${({ theme }) => theme.COLORS.BORDER_INPUT};
-    background-color: ${({ theme }) => theme.COLORS.BG_INPUT};
+    border-color: ${({ theme }) => theme.COLORS.BORDER_LIST_SELECT};
+    background-color: ${({ theme }) => theme.COLORS.BG_LIST_SELECT};
 `;
 
 export const ItemSelectView = styled(TouchableOpacity)<PropsButton>`
@@ -27,8 +27,8 @@ export const ItemSelectView = styled(TouchableOpacity)<PropsButton>`
     justify-content: center;
     border-bottom-width: 1px;
     border-bottom-style: solid;
-    border-bottom-color: ${({ theme }) => theme.COLORS.BORDER_INPUT};
-    background-color: ${({ theme, isActive }) => isActive ? theme.COLORS.BG_BLOCK : theme.COLORS.BG_INPUT};
+    border-bottom-color: ${({ theme }) => theme.COLORS.BORDER_LIST_SELECT};
+    background-color: ${({ theme, isActive }) => isActive ? theme.COLORS.BG_BLOCK : theme.COLORS.BG_LIST_SELECT};
 `;
 
 export const SelectText = styled.Text`

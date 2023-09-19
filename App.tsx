@@ -5,7 +5,6 @@ import { useFonts, Roboto_400Regular, Roboto_700Bold } from '@expo-google-fonts/
 import { Routes } from './src/Routes';
 import { Loading } from '@components/Loading';
 import { StatusBar } from 'expo-status-bar';
-import Footer from '@components/Footer';
 
 export default function App() {
   const [fontsLoaded] = useFonts({ Roboto_400Regular, Roboto_700Bold });
@@ -21,7 +20,6 @@ export default function App() {
         fontsLoaded ?
           <>
             <Routes />
-            <Footer />
           </>
           :
           <Loading />

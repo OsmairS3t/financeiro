@@ -2,12 +2,10 @@ import React from 'react';
 
 import { Container, Text } from './styles';
 
-const Footer: React.FC = () => {
+export default function Footer() {
     return (
         <Container>
             <Text>Equipe Farol :: 2023</Text>
         </Container>
     )
 }
-
-export default Footer;

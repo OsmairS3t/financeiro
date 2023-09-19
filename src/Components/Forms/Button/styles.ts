@@ -2,7 +2,7 @@ import styled from "styled-components/native";
 import { Pressable } from "react-native";
 
 export const Container = styled(Pressable)`
-    width: 320px;
+    width: fit-content;
     max-height: 60px;
     min-height: 60px;
     border-radius: 8px;
