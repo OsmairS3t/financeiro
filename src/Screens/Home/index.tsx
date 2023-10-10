@@ -1,16 +1,17 @@
 import { useState, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { 
     FlatList, 
-    TextInput, 
     TouchableOpacity, 
     Platform, 
     TouchableWithoutFeedback, 
-    Keyboard } from 'react-native';
+    Keyboard, 
+    Text} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useNavigation } from '@react-navigation/native';
-import { IResumeCategory } from '@utils/interfaces';
-import { Balances, Categories } from '@utils/database';
+import { IBalance, IResumeCategory } from '@utils/interfaces';
+import { Categories } from '@utils/database';
 
 import Header from '@components/Header';
 import Footer from '@components/Footer';
@@ -20,12 +21,8 @@ import { Graphic } from '@components/Graphic';
 import {
     Container,
     Content,
-    GroupButtonsHeader,
     ListBalances,
     NewBalances,
-    ButtonDate,
-    IconDate,
-    GroupInput,
     GroupGraphic,
     ResumeGraphic,
     TextResumeGraphic,
@@ -40,88 +37,77 @@ import {
 } from './styles';
 
 export function Home() {
+    const keyBalances = '@LJF:Balances'
     const navigation = useNavigation();
-    const [date, setDate] = useState(new Date())
-    const [isOpen, setIsOpen] = useState(false)
-    const [dateFormated, setDateFormated] = useState(Intl.DateTimeFormat('pt-BR', {
+    
+    const [balances, setBalances] = useState<IBalance[]>([])
+    const [totalBalance, setTotalBalance] = useState(0)
+    const [resumes, setResumes] = useState<IResumeCategory[]>([])
+    const [dateBalance, setDateBalance] = useState('22/09/2023')
+    const [dateBase, setDateBase] = useState(Intl.DateTimeFormat('pt-BR', {
         day: '2-digit',
         month: '2-digit',
         year: 'numeric'
-    }).format(date))
-    const [totalBalance, setTotalBalance] = useState(0)
-    const [resumes, setResumes] = useState<IResumeCategory[]>([])
-    const [dateBalance, setDateBalance] = useState('01/08/2023')
+    }).format(new Date()))
+    //const [user, setUser] = useState('')
 
-    function onChange(event: DateTimePickerEvent, selectedDate: Date) {
-        if (event.type === 'set') {
-            const currentDate = selectedDate
-            setDate(currentDate);
-            if (Platform.OS !== 'web') {
-                showDatepicker()
-                setDate(currentDate);
-            }
-        } else {
-            showDatepicker()
+    async function getBalances() {
+        try {
+            const bal = await AsyncStorage.getItem(keyBalances);
+            const result = bal ? JSON.parse(bal) : []
+            setBalances(result)
+        } catch (error) {
+            console.log('Erro ao recuperar valor do AsyncStorage')
         }
-    };
-
-    const showDatepicker = () => {
-        setIsOpen(!isOpen)
-    };
+    }
 
     function handleListBalance() {
         navigation.navigate('listbalance')
-        //navigation.navigate('listbalance')
     }
 
     function handleNewBalance() {
         navigation.navigate('balance')
     }
 
-    function resumeTotalBalance() {
-        let incomeBalance = 0
-        let outcomeBalance = 0
-        Balances.map(balance => {
-            if (balance.typebalance === 'income') {
-                incomeBalance = incomeBalance + balance.price
-            } else {
-                outcomeBalance = outcomeBalance + balance.price
-            }
-        })
-        let totBalance = incomeBalance - outcomeBalance
-        return (totBalance)
-    }
-
-    function resumeBalancesCategory(dateBalance: string) {
-        let totCategories = 0;
-        let sumCategory = 0;
+    function resumeTotalBalanceCategory() {
         let arrBalanceCategories: IResumeCategory[] = []
+        let totCategories = 0;
+        let sumIncomeCategory = 0
+        let sumOutcomeCategory = 0
+        let balance_category = 0
+        let dataResume:IResumeCategory
+
         Categories.map(category => {
-            sumCategory = 0
-            const dataBalance = Balances
-                .filter(balance => balance.datebalance === dateBalance)
-                .filter(balance => balance.category === category.id)
-            dataBalance.map(data => {
-                sumCategory = sumCategory + data.price
+            sumIncomeCategory = 0
+            sumOutcomeCategory = 0
+            const balancesFilteredCategory:IBalance[] = balances.filter(balance => balance.category === category.id)
+            balancesFilteredCategory.map(bfc => {
+            if (bfc.typebalance === 'income') {
+                sumIncomeCategory = sumIncomeCategory + bfc.price
+            } else {
+                sumOutcomeCategory = sumOutcomeCategory + bfc.price
+            }
+            balance_category = sumIncomeCategory - sumOutcomeCategory;
             })
-            totCategories = totCategories + sumCategory
-            const newData = {
+            dataResume = {
                 idcategory: category.id,
                 iconcategory: category.icon,
                 namecategory: category.name,
                 colorcategory: category.color,
-                balancecategory: sumCategory,
-                datebalance: dateBalance
+                balancecategory: balance_category,
+                datebalance: dateBase
             }
-            arrBalanceCategories.push(newData)
-            setTotalBalance(totCategories)
+            arrBalanceCategories.push(dataResume)
+            totCategories = totCategories + (sumIncomeCategory - sumOutcomeCategory)
         })
-        return arrBalanceCategories
+        setTotalBalance(totCategories)
+        return (arrBalanceCategories)
     }
 
     useEffect(() => {
-        setResumes(resumeBalancesCategory(dateBalance))
-    }, [dateBalance])
+        getBalances();
+        setResumes(resumeTotalBalanceCategory)
+    }, [])
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -129,38 +115,6 @@ export function Home() {
                 <Container>
                     <Header />
                     <Content>
-                        <GroupButtonsHeader>
-                            <GroupInput>
-                                <TextInput
-                                    placeholder={dateBalance}
-                                    id='dateBalance'
-                                    value={dateBalance}
-                                    onChangeText={setDateBalance}
-                                    keyboardType='numeric'
-                                    style={{
-                                        backgroundColor: '#eee',
-                                        padding: 10,
-                                        height: 40,
-                                        borderRadius: 5,
-                                        borderWidth: 1,
-                                        borderColor: '#aaa',
-                                        textAlign: 'center'
-                                    }}
-                                />
-                                <TouchableOpacity onPress={showDatepicker}>
-                                    <IconDate />
-                                </TouchableOpacity>
-                                {isOpen && (
-                                    <DateTimePicker
-                                        display='spinner'
-                                        value={date}
-                                        mode='date'
-                                        onChange={(event) => onChange(event, date)}
-                                    />
-                                )}
-                            </GroupInput>
-                        </GroupButtonsHeader>
-
                         <GroupGraphic>
                             <ResumeGraphic>
                                 <TextResumeGraphic>
@@ -177,29 +131,29 @@ export function Home() {
                         </GroupGraphic>
 
                         <ListRsume>
-                            <TitleTransactions>RESUMO DO DIA {dateBalance}</TitleTransactions>
+                            <TitleTransactions>RESUMO DE CAIXA</TitleTransactions>
                             <FlatList
-                                data={resumes}
-                                keyExtractor={item => item.idcategory.toString()}
+                                data={resumes} 
+                                keyExtractor={item => String(item.idcategory)}
                                 renderItem={({ item }) => (
                                     <ResumeCategory balanceCategory={item} />
                                 )}
                                 showsVerticalScrollIndicator={false}
                             />
                         </ListRsume>
-                        
-                        <GroupButton>
-                            <BtnList testID='Listar' onPress={handleListBalance}>
-                                <ListBalances size={22} />
-                                <TextButton>Listar</TextButton>
-                            </BtnList>
-                            <BtnAdd  onPress={handleNewBalance}>
-                                <NewBalances size={22} />
-                                <TextButton>Adicionar</TextButton>
-                            </BtnAdd>
-                        </GroupButton>
-
                     </Content>
+
+                    <GroupButton>
+                        <BtnList testID='Listar' onPress={handleListBalance}>
+                            <ListBalances size={22} />
+                            <TextButton>Listar</TextButton>
+                        </BtnList>
+                        <BtnAdd onPress={handleNewBalance}>
+                            <NewBalances size={22} />
+                            <TextButton>Lançamento</TextButton>
+                        </BtnAdd>
+                    </GroupButton>
+                    
                     <Footer />
                 </Container>
             </TouchableWithoutFeedback>

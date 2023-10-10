@@ -46,7 +46,7 @@ export const BtnSocial = styled.Pressable`
     justify-content: flex-start;
     align-items: center;
     border-radius: 10px;
-    background-color: ${({ theme})=>theme.COLORS.BG_BUTTON_SOCIAL};
+    background-color: ${({ theme})=>theme.COLORS.BG_SCREEN};
 `;
 
 export const IconBtnSocial = styled.Image`
@@ -57,7 +57,13 @@ export const IconBtnSocial = styled.Image`
 `;
 
 export const TextBtnSocial = styled.Text`
-    margin-left: 30px;
+    margin-left: 50px;
+    font-family: ${({theme}) => theme.FONT_FAMILY.REGULAR};
+    color: ${({theme}) => theme.COLORS.TEXT_DEFAULT};
+`;
+
+export const TextNewReg = styled.Text`
     font-family: ${({theme}) => theme.FONT_FAMILY.REGULAR};
     color: ${({theme}) => theme.COLORS.TEXT_BLOCK};
+    text-align: center;
 `;

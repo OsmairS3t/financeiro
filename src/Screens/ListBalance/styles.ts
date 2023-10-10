@@ -1,4 +1,6 @@
 import styled from "styled-components/native";
+import { TouchableOpacity } from 'react-native';
+import { Calendar } from 'phosphor-react-native';
 
 export const Container = styled.View`
     flex: 1;
@@ -13,6 +15,28 @@ export const Title = styled.Text`
     font-size: ${({ theme }) => theme.FONT_SIZE.LG}px;
     color: ${({ theme }) => theme.COLORS.TEXT_DEFAULT};
 `;
+
+export const GroupHeader = styled.View`
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+`;
+
+export const GroupInput = styled.View`
+    width: 150px;
+    padding: 5px;
+    display: flex;
+    flex-direction: row;
+    gap: 16px;
+    align-items: center;
+    justify-content: center;
+`;
+
+export const IconDate = styled(Calendar).attrs(({theme})=>({
+    size: 36,
+    color: theme.COLORS.BR_BLOCK
+}))``;
 
 export const GroupSwitch = styled.View`
     flex-direction: row;

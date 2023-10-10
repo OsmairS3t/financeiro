@@ -4,12 +4,11 @@ export interface ICategory {
     icon: string;
     color: string;
 }
-
 export interface IBalance {
-    id: number;
+    id: string;
     category: number;
     typebalance: string;
-    name: string;
+    description: string;
     price: number;
     datebalance: string;
     file?: string;

@@ -27,8 +27,14 @@ export default function Transaction({ balance }: Props) {
 
     return (
         <Container key={balance.id} colorCategory={color}>
-            <TextTransaction>{balance.name}</TextTransaction>
-            <PriceTransaction>{balance.price}</PriceTransaction>
+            <TextTransaction>{balance.datebalance}</TextTransaction>
+            <TextTransaction>{balance.description}</TextTransaction>
+            <PriceTransaction>
+                {Intl.NumberFormat('pt-BR', {
+                    style: 'currency',
+                    currency: 'BRL'
+                }).format(balance.price)}
+            </PriceTransaction>
         </Container>
     )
 }

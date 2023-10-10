@@ -20,7 +20,10 @@ export const Container = styled.TouchableOpacity<colorcategoryProps>`
     border-top-width: 1px;
     border-bottom-width: 1px;
     border-right-width: 1px;
-    border-color: ${({ colorCategory }) => colorCategory};
+    border-left-color: ${({ colorCategory }) => colorCategory};
+    border-right-color: ${({ theme }) => theme.COLORS.BORDER_INPUT};
+    border-top-color: ${({ theme }) => theme.COLORS.BORDER_INPUT};
+    border-bottom-color: ${({ theme }) => theme.COLORS.BORDER_INPUT};
 `;
 
 export const LineColorIdentity = styled.View<colorcategoryProps>`
@@ -37,15 +40,14 @@ export const IconTransaction = styled(MaterialIcons).attrs(({theme})=>({
 
 export const TextTransaction = styled.Text`
     flex: 1;    
-    margin-left: 10px;
     margin-right: 10px;
-    font-size: 18px;
+    font-size: 14px;
     color: ${({ theme }) => theme.COLORS.TEXT_DEFAULT};
     font-family: ${({ theme }) => theme.FONT_FAMILY.REGULAR};
 `;
 
 export const PriceTransaction = styled.Text`
-    font-size: 18px;
+    font-size: 14px;
     color: ${({ theme }) => theme.COLORS.TEXT_DEFAULT};
     font-family: ${({ theme }) => theme.FONT_FAMILY.REGULAR};
 `;

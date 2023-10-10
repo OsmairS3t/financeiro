@@ -20,7 +20,10 @@ export const Container = styled.TouchableOpacity<colorcategoryProps>`
     border-top-width: 1px;
     border-bottom-width: 1px;
     border-right-width: 1px;
-    border-color: ${({ colorCategory }) => colorCategory};
+    border-left-color: ${({ colorCategory }) => colorCategory};
+    border-right-color: ${({ theme }) => theme.COLORS.BORDER_INPUT};
+    border-top-color: ${({ theme }) => theme.COLORS.BORDER_INPUT};
+    border-bottom-color: ${({ theme }) => theme.COLORS.BORDER_INPUT};
 `;
 
 export const LineColorIdentity = styled.View<colorcategoryProps>`
@@ -30,9 +33,9 @@ export const LineColorIdentity = styled.View<colorcategoryProps>`
     background-color: ${({ colorCategory }) => colorCategory};
 `;
 
-export const IconTransaction = styled(MaterialIcons).attrs(({theme})=>({
+export const IconTransaction = styled(MaterialIcons).attrs(({ theme })=>({
     size: 24,
-    color: theme.COLORS.ICON_LIST
+    color: theme.COLORS.ICON_LIST,
 }))``;
 
 export const TextTransaction = styled.Text`

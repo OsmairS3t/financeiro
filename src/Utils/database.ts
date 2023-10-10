@@ -27,73 +27,73 @@ export const Categories = [
 
 export const Balances = [
     {
-        id: 1,
+        id: '1',
         category: 1,
         typebalance: 'income', 
-        name: 'Coca-cola Lata 350ml',
+        description: 'Coca-cola Lata 350ml',
         price: 35,
         datebalance: '01/08/2023',
         file: 'file001.png'
     },
     {
-        id: 2,
+        id: '2',
         category: 2,
         typebalance: 'income', 
-        name: 'Luz Jovem',
+        description: 'Luz Jovem',
         price: 10,
         datebalance: '01/08/2023',
         file: 'file001.png'
     },
     {
-        id: 3,
+        id: '3',
         category: 1,
         typebalance: 'income', 
-        name: 'Balas diversas',
+        description: 'Balas diversas',
         price: 29,
         datebalance: '03/08/2023',
         file: 'file001.png'
     },
     {
-        id: 4,
+        id: '4',
         category: 3,
         typebalance: 'income', 
-        name: 'Inscrição conferência',
+        description: 'Inscrição conferência',
         price: 100,
         datebalance: '01/08/2023',
         file: 'file001.png'
     },
     {
-        id: 5,
+        id: '5',
         category: 1,
         typebalance: 'income', 
-        name: 'Salgados congelados',
+        description: 'Salgados congelados',
         price: 80,
         datebalance: '04/08/2023',
         file: 'file001.png'
     },
     {
-        id: 6,
+        id: '6',
         category: 4,
         typebalance: 'income', 
-        name: 'Camisetas',
+        description: 'Camisetas',
         price: 500,
         datebalance: '01/08/2023',
         file: 'file001.png'
     },
     {
-        id: 7,
+        id: '7',
         category: 4,
         typebalance: 'outcome', 
-        name: 'Camiseta',
+        description: 'Camiseta',
         price: 50,
         datebalance: '10/08/2023',
         file: 'file001.png'
     },
     {
-        id: 8,
+        id: '8',
         category: 1,
         typebalance: 'outcome', 
-        name: 'Salgado',
+        description: 'Salgado',
         price: 5,
         datebalance: '10/08/2023',
         file: 'file001.png'

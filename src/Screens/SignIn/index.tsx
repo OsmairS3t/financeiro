@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import {Alert} from 'react-native'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useForm, Controller } from 'react-hook-form'
 import * as Yup from 'yup'
@@ -16,6 +16,7 @@ import {
     Title,
     Form,
     TextError,
+    TextNewReg,
     BtnSocial,
     IconBtnSocial,
     TextBtnSocial
@@ -41,6 +42,15 @@ export function SignIn() {
 
     function submitLogIn(formData: SignInProps) {
         console.log(formData)
+    }
+
+    async function storeData(user: string) {
+        try {
+            await AsyncStorage.setItem('@ljf_user', user);
+        } catch (error) {
+            console.log('Não foi possível salvar usuario.')
+        }
+        navigation.navigate('home')
     }
 
     function sendHome() {
@@ -96,9 +106,11 @@ export function SignIn() {
 
                     <Button
                         title="Entrar"
-                        onPress={sendHome}
+                        onPress={()=>{storeData('Osmair')}}
                     />
 
+                    <TextNewReg>Não tenho cadastro</TextNewReg>
+                    
                     <BtnSocial onPress={handleLoginSocial}>
                         <IconBtnSocial source={require('@assets/google.png')} />
                         <TextBtnSocial>

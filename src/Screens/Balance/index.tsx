@@ -5,21 +5,24 @@ import {
     TouchableWithoutFeedback, 
     Alert, 
     Keyboard } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
 import { useTheme } from 'styled-components';
-
 import { useNavigation } from '@react-navigation/native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import Highlight from '@components/Highlight';
+import Header from '@components/Header';
+import uuid from 'react-native-uuid';
 import * as ImagePicker from 'expo-image-picker';
+
 import { useForm } from 'react-hook-form'
 import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-import Highlight from '@components/Highlight';
 import { Select } from '@components/Forms/Select';
 import { FormDataProps, InputForm } from '@components/Forms/InputForm';
 import { Button } from '@components/Forms/Button';
-import { Balances, Categories } from '@utils/database';
-import { NewNumber } from '@utils/functions';
+import { Categories } from '@utils/database';
+import { IBalance } from '@utils/interfaces';
 
 import {
     Container,
@@ -42,7 +45,6 @@ import {
     ImgCapture,
     TextButton
 } from './styles';
-import Header from '@components/Header';
 
 const schema = Yup.object().shape({
     description: Yup.string().required('A descrição é necessária.'),
@@ -50,11 +52,9 @@ const schema = Yup.object().shape({
 })
 
 export function Balance() {
+    const keyBalance = '@LJF:Balances';
     const navigation = useNavigation();
-    const sequence = Balances.reduce(function (prev, current) {
-        return (prev.id > current.id) ? prev : current
-    })
-
+    const [balances, setBalances] = useState<IBalance[]>([])
     //form's variables
     const [idCategory, setIdCategory] = useState(0)
     const [category, setCategory] = useState('Selecione a Categoria')
@@ -67,7 +67,7 @@ export function Balance() {
         year: 'numeric'
     }).format(new Date()))
     const [imgComprove, setImgComprove] = useState<string>('/assets/farol.png')
-
+    //settings variables
     const theme = useTheme();
     const [modalVisible, setModalVisible] = useState(false);
     const [typeTransformed, setTypeTransformed] = useState('Entrada')
@@ -92,14 +92,6 @@ export function Balance() {
             setTypeTransformed('Entrada')
         }
     }
-
-    useEffect(() => {
-        if (idCategory !== 0) {
-            setIsSelectEmpty(false)
-        } else {
-            setIsSelectEmpty(true)
-        }
-    }, [idCategory])
 
     // async function LoadImage() {
     //     if (Platform.OS !== 'web') {
@@ -145,10 +137,18 @@ export function Balance() {
         reset();
     }
 
-    function handleSubmitBalance(form: FormDataProps) {
-        const sequencia = NewNumber(sequence.id)
-        const data = {
-            id: sequencia,
+    useEffect(() => {
+        if (idCategory !== 0) {
+            setIsSelectEmpty(false)
+        } else {
+            setIsSelectEmpty(true)
+        }
+    }, [idCategory])
+
+    async function handleSubmitBalance(form: FormDataProps) {
+        
+        const dataBalance = {
+            id: uuid.v4(),
             category: idCategory,
             description: form.description,
             typebalance: typeBalance,
@@ -156,9 +156,22 @@ export function Balance() {
             datebalance: dateBalance,
             file: imgComprove
         }
-        console.log(data)
-        Alert.alert('Dados incluídos com sucesso!');
-        LimpaDadosForm()
+
+        try {
+            const data = await AsyncStorage.getItem(keyBalance);
+            const currentData = data ? JSON.parse(data) : [];  
+            const dataFormatted = [
+                ...currentData,
+                dataBalance
+            ]
+            await AsyncStorage.setItem(keyBalance, JSON.stringify(dataFormatted));
+            Alert.alert('Lançamento cadastrado com sucesso!');
+            //reset();
+            LimpaDadosForm()
+        } catch (error) {
+            console.log(error);
+            Alert.alert(`Não foi possivel salvar devido a ${error}`);
+        }
     }
 
     return (

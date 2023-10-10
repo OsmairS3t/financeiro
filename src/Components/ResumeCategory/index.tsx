@@ -7,6 +7,7 @@ import {
     TextTransaction,
     PriceTransaction
 } from './styles'
+import { ReactNode } from 'react';
 
 interface TransactionProps {
     balanceCategory: {

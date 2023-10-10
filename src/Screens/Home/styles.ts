@@ -106,7 +106,7 @@ export const BtnList = styled(Pressable)`
 export const BtnAdd = styled(Pressable)`
     padding: 10px;
     height: 50px;
-    width: 150px;
+    width: 180px;
     background-color: ${({ theme }) => theme.COLORS.BG_BUTTON}; 
     border-radius: 8px;
     flex-direction: row;
