@@ -1,15 +1,16 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { 
-    FlatList, 
-    TouchableOpacity, 
-    Platform, 
-    TouchableWithoutFeedback, 
-    Keyboard, 
-    Text} from 'react-native';
+import {
+    FlatList,
+    TouchableOpacity,
+    Platform,
+    TouchableWithoutFeedback,
+    Keyboard,
+    Text
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import { IBalance, IResumeCategory } from '@utils/interfaces';
 import { Categories } from '@utils/database';
 
@@ -39,11 +40,10 @@ import {
 export function Home() {
     const keyBalances = '@LJF:Balances'
     const navigation = useNavigation();
-    
+
     const [balances, setBalances] = useState<IBalance[]>([])
     const [totalBalance, setTotalBalance] = useState(0)
     const [resumes, setResumes] = useState<IResumeCategory[]>([])
-    const [dateBalance, setDateBalance] = useState('22/09/2023')
     const [dateBase, setDateBase] = useState(Intl.DateTimeFormat('pt-BR', {
         day: '2-digit',
         month: '2-digit',
@@ -75,19 +75,19 @@ export function Home() {
         let sumIncomeCategory = 0
         let sumOutcomeCategory = 0
         let balance_category = 0
-        let dataResume:IResumeCategory
+        let dataResume: IResumeCategory
 
         Categories.map(category => {
             sumIncomeCategory = 0
             sumOutcomeCategory = 0
-            const balancesFilteredCategory:IBalance[] = balances.filter(balance => balance.category === category.id)
+            const balancesFilteredCategory: IBalance[] = balances.filter(balance => balance.category === category.id)
             balancesFilteredCategory.map(bfc => {
-            if (bfc.typebalance === 'income') {
-                sumIncomeCategory = sumIncomeCategory + bfc.price
-            } else {
-                sumOutcomeCategory = sumOutcomeCategory + bfc.price
-            }
-            balance_category = sumIncomeCategory - sumOutcomeCategory;
+                if (bfc.typebalance === 'income') {
+                    sumIncomeCategory = sumIncomeCategory + bfc.price
+                } else {
+                    sumOutcomeCategory = sumOutcomeCategory + bfc.price
+                }
+                balance_category = sumIncomeCategory - sumOutcomeCategory;
             })
             dataResume = {
                 idcategory: category.id,
@@ -101,13 +101,18 @@ export function Home() {
             totCategories = totCategories + (sumIncomeCategory - sumOutcomeCategory)
         })
         setTotalBalance(totCategories)
-        return (arrBalanceCategories)
+        setResumes(arrBalanceCategories)
+        //return (arrBalanceCategories)
     }
 
     useEffect(() => {
         getBalances();
-        setResumes(resumeTotalBalanceCategory)
+        resumeTotalBalanceCategory()
     }, [])
+
+    useFocusEffect(useCallback(() => {
+        resumeTotalBalanceCategory();
+    }, []));
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -133,7 +138,7 @@ export function Home() {
                         <ListRsume>
                             <TitleTransactions>RESUMO DE CAIXA</TitleTransactions>
                             <FlatList
-                                data={resumes} 
+                                data={resumes}
                                 keyExtractor={item => String(item.idcategory)}
                                 renderItem={({ item }) => (
                                     <ResumeCategory balanceCategory={item} />
@@ -153,7 +158,7 @@ export function Home() {
                             <TextButton>Lançamento</TextButton>
                         </BtnAdd>
                     </GroupButton>
-                    
+
                     <Footer />
                 </Container>
             </TouchableWithoutFeedback>

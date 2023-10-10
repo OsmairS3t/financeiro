@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react';
-import { 
-    Platform, 
-    Switch, 
-    TouchableWithoutFeedback, 
-    Alert, 
-    Keyboard } from 'react-native';
+import {
+    Platform,
+    Switch,
+    TouchableWithoutFeedback,
+    Alert,
+    Keyboard
+} from 'react-native';
 import { useTheme } from 'styled-components';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -146,7 +147,7 @@ export function Balance() {
     }, [idCategory])
 
     async function handleSubmitBalance(form: FormDataProps) {
-        
+
         const dataBalance = {
             id: uuid.v4(),
             category: idCategory,
@@ -159,7 +160,7 @@ export function Balance() {
 
         try {
             const data = await AsyncStorage.getItem(keyBalance);
-            const currentData = data ? JSON.parse(data) : [];  
+            const currentData = data ? JSON.parse(data) : [];
             const dataFormatted = [
                 ...currentData,
                 dataBalance

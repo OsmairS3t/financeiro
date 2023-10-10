@@ -33,7 +33,7 @@ export default function ResumeCategory({ balanceCategory }: TransactionProps) {
             colorCategory={balanceCategory.colorcategory}
             onPress={() => openDetail(balanceCategory.idcategory, balanceCategory.datebalance)}
         >
-            <IconTransaction name={balanceCategory.iconcategory} />
+            <IconTransaction name={String(balanceCategory.iconcategory)} />
             <TextTransaction>{balanceCategory.namecategory}</TextTransaction>
             <PriceTransaction>
                 {Intl.NumberFormat('pt-BR', {
