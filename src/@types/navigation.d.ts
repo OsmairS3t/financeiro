@@ -7,7 +7,6 @@ export declare global {
             listbalance: undefined;
             detailcategory: {
                 idcategory: number;
-                datecategory: string;
             };
         }
     }

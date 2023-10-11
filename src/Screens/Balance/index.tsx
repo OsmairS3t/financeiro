@@ -18,7 +18,7 @@ import { useForm } from 'react-hook-form'
 import * as Yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import { ASYNCSTORAGE_KEY_BALANCES } from '@env'
 import { Select } from '@components/Forms/Select';
 import { FormDataProps, InputForm } from '@components/Forms/InputForm';
 import { Button } from '@components/Forms/Button';
@@ -53,7 +53,7 @@ const schema = Yup.object().shape({
 })
 
 export function Balance() {
-    const keyBalance = '@LJF:Balances';
+    const keyBalance = ASYNCSTORAGE_KEY_BALANCES
     const navigation = useNavigation();
     const [balances, setBalances] = useState<IBalance[]>([])
     //form's variables

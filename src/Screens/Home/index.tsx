@@ -1,23 +1,17 @@
 import { useState, useEffect, useCallback } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import {
-    FlatList,
-    TouchableOpacity,
-    Platform,
-    TouchableWithoutFeedback,
-    Keyboard,
-    Text
-} from 'react-native';
+import { FlatList, TouchableWithoutFeedback, Keyboard } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import DateTimePicker, { DateTimePickerEvent } from '@react-native-community/datetimepicker';
 import { useFocusEffect, useNavigation } from '@react-navigation/native';
-import { IBalance, IResumeCategory } from '@utils/interfaces';
-import { Categories } from '@utils/database';
-
+import { ASYNCSTORAGE_KEY_BALANCES } from '@env'
 import Header from '@components/Header';
 import Footer from '@components/Footer';
 import ResumeCategory from '@components/ResumeCategory';
 import { Graphic } from '@components/Graphic';
+
+import { Categories } from '@utils/database';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import { IBalance, IResumeCategory } from '@utils/interfaces';
 
 import {
     Container,
@@ -38,7 +32,8 @@ import {
 } from './styles';
 
 export function Home() {
-    const keyBalances = '@LJF:Balances'
+    const keyBalances = ASYNCSTORAGE_KEY_BALANCES;
+    //@LJF:Balances ate criar o .env no outro pc
     const navigation = useNavigation();
 
     const [balances, setBalances] = useState<IBalance[]>([])
@@ -81,28 +76,89 @@ export function Home() {
             sumIncomeCategory = 0
             sumOutcomeCategory = 0
             const balancesFilteredCategory: IBalance[] = balances.filter(balance => balance.category === category.id)
-            balancesFilteredCategory.map(bfc => {
-                if (bfc.typebalance === 'income') {
-                    sumIncomeCategory = sumIncomeCategory + bfc.price
-                } else {
-                    sumOutcomeCategory = sumOutcomeCategory + bfc.price
+            if (balancesFilteredCategory) {
+                balancesFilteredCategory.map(bfc => {
+                    if (bfc.typebalance === 'income') {
+                        sumIncomeCategory = sumIncomeCategory + bfc.price
+                    } else {
+                        sumOutcomeCategory = sumOutcomeCategory + bfc.price
+                    }
+                    balance_category = sumIncomeCategory - sumOutcomeCategory;
+                })
+                dataResume = {
+                    idcategory: category.id,
+                    iconcategory: category.icon,
+                    namecategory: category.name,
+                    colorcategory: category.color,
+                    balancecategory: balance_category,
+                    datebalance: dateBase
                 }
-                balance_category = sumIncomeCategory - sumOutcomeCategory;
-            })
-            dataResume = {
-                idcategory: category.id,
-                iconcategory: category.icon,
-                namecategory: category.name,
-                colorcategory: category.color,
-                balancecategory: balance_category,
-                datebalance: dateBase
+            } else {
+                dataResume = {
+                    idcategory: category.id,
+                    iconcategory: category.icon,
+                    namecategory: category.name,
+                    colorcategory: category.color,
+                    balancecategory: 0,
+                    datebalance: dateBase
+                }
             }
             arrBalanceCategories.push(dataResume)
             totCategories = totCategories + (sumIncomeCategory - sumOutcomeCategory)
         })
         setTotalBalance(totCategories)
         setResumes(arrBalanceCategories)
-        //return (arrBalanceCategories)
+    }
+
+    function resumeTotal() {
+        let totCategories = 0;
+        let sumIncomeCategory = 0
+        let sumOutcomeCategory = 0
+        let balance_category = 0
+        let arrBalanceCategories: IResumeCategory[] = []
+        let dataResume: IResumeCategory
+
+        sumIncomeCategory = 0
+        sumOutcomeCategory = 0
+        const Balances = [
+            {
+                id: '1',
+                category: 1,
+                typebalance: 'income',
+                description: 'Coca-cola Lata 350ml',
+                price: 35,
+                datebalance: '01/08/2023',
+                file: 'file001.png'
+            },
+            {
+                id: '2',
+                category: 2,
+                typebalance: 'income',
+                description: 'Luz Jovem',
+                price: 10,
+                datebalance: '01/08/2023',
+                file: 'file001.png'
+            },
+            {
+                id: '3',
+                category: 1,
+                typebalance: 'income',
+                description: 'Balas diversas',
+                price: 29,
+                datebalance: '03/08/2023',
+                file: 'file001.png'
+            }
+        ]
+
+        //   const sumWithInitial = Balances.reduce((accumulator, balance) => {
+        //     if(!accumulator[balance.category]) {
+        //       accumulator[balance.category] = []
+        //     }
+        //     accumulator[balance.category].push({balance})
+        //     return accumulator
+        //   }, {});
+
+        // console.log(sumWithInitial);
     }
 
     useEffect(() => {

@@ -1,10 +1,16 @@
-import { useRoute } from '@react-navigation/native'
-import { useNavigation } from '@react-navigation/native';
-import Highlight from '@components/Highlight';
-import { Categories, Balances } from '@utils/database';
 import { useEffect, useState } from 'react';
-import { IBalance } from '@utils/interfaces';
+import { FlatList, Text } from 'react-native'
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRoute, useNavigation } from '@react-navigation/native'
+
+import Highlight from '@components/Highlight';
 import Header from '@components/Header';
+
+import { ASYNCSTORAGE_KEY_BALANCES } from '@env'
+import { IBalance } from '@utils/interfaces';
+
+import { Categories } from '@utils/database';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import {
     Container,
@@ -20,17 +26,18 @@ import {
 
 type RouteParams = {
     idcategory: number;
-    datecategory: string;
 }
 
 export function DetailCategory() {
+    const keyBalances = ASYNCSTORAGE_KEY_BALANCES
     let sumCategory = 0
     const [balances, setBalances] = useState<IBalance[]>([])
+    const [dataBalances, setDataBalances] = useState<IBalance[]>([])
     const [colorCategory, setColorCategory] = useState<string>('');
     const [nameCategory, setNameCategory] = useState<string>('');
     const navigator = useNavigation();
     const route = useRoute();
-    const { idcategory, datecategory } = route.params as RouteParams;
+    const { idcategory } = route.params as RouteParams;
 
     function handleBack() {
         navigator.navigate('home')
@@ -41,60 +48,78 @@ export function DetailCategory() {
         name ? setNameCategory(name) : setNameCategory('-')
     }
 
+    async function getBalances() {
+        try {
+            const result = await AsyncStorage.getItem(keyBalances)
+            const resultJson: IBalance[] = result ? JSON.parse(result) : []
+            setBalances(resultJson.filter(res => res.category === idcategory))
+        } catch (error) {
+            console.log('Erro ao recuperar valor do AsyncStorage')
+        }
+    }
+
     useEffect(() => {
         searchCategory(idcategory)
-        setBalances(Balances
-            .filter(balance => balance.category === idcategory)
-            .filter(balance => balance.datebalance === datecategory))
+        getBalances()
     }, [idcategory])
 
     return (
-        <Container>
-            <Header />
-            <Content>
-                <Highlight
-                    onPress={handleBack}
-                    title={nameCategory}
-                    colorBG={colorCategory}
-                />
-                <Title>Todos os lançamentos de {datecategory}</Title>
-                {balances.map(balance => (
-                    <GroupBlock key={balance.id}>
-                        <Block>
-                            <TitleBlock>Descrição:</TitleBlock>
-                            <TextBlock>{balance.name}</TextBlock>
-                        </Block>
-                        <Block>
-                            <TitleBlock>Tipo:</TitleBlock>
+        <SafeAreaView style={{ flex: 1 }}>
+            <Container>
+                <Header />
+                <Content>
+                    <Highlight
+                        onPress={handleBack}
+                        title={nameCategory}
+                        colorBG={colorCategory}
+                    />
+                    <Title>Todos os lançamentos</Title>
+                    <FlatList
+                        data={balances}
+                        renderItem={({ item }) => (
+                            <GroupBlock key={item.id}>
+                                <Block>
+                                    <TitleBlock>Descrição:</TitleBlock>
+                                    <TextBlock>{item.description}</TextBlock>
+                                </Block>
+                                <Block>
+                                    <TitleBlock>Tipo:</TitleBlock>
+                                    <TextBlock>
+                                        {item.typebalance === 'income' ?
+                                            'Entrada' : 'Saída'
+                                        }
+                                    </TextBlock>
+                                </Block>
+                                <Block>
+                                    <TitleBlock>Valor:</TitleBlock>
+                                    <TextBlock>
+                                        {Intl.NumberFormat('pt-BR', {
+                                            style: 'currency',
+                                            currency: 'BRL'
+                                        }).format(item.price)}
+                                    </TextBlock>
+                                </Block>
+                                <Block>
+                                    <TitleBlock>Comprovante:</TitleBlock>
+                                    <TextBlock>{item.file}</TextBlock>
+                                </Block>
+                                <BlockSummary>
+                                    <TextResume>{Intl.NumberFormat('pt-BR', {
+                                        style: 'currency',
+                                        currency: 'BRL'
+                                    }).format(sumCategory + item.price)}
+                                    </TextResume>
+                                </BlockSummary>
+                            </GroupBlock>
+                        )}
+                        ListEmptyComponent={
                             <TextBlock>
-                                {balance.typebalance === 'income' ?
-                                    'Entrada' : 'Saída'
-                                }
+                                Não foram encontrados lançamentos nessa categoria.
                             </TextBlock>
-                        </Block>
-                        <Block>
-                            <TitleBlock>Valor:</TitleBlock>
-                            <TextBlock>
-                                {Intl.NumberFormat('pt-BR', {
-                                    style: 'currency',
-                                    currency: 'BRL'
-                                }).format(balance.price)}
-                            </TextBlock>
-                        </Block>
-                        <Block>
-                            <TitleBlock>Comprovante:</TitleBlock>
-                            <TextBlock>{balance.file}</TextBlock>
-                        </Block>
-                        <BlockSummary>
-                            <TextResume>{Intl.NumberFormat('pt-BR', {
-                                style: 'currency',
-                                currency: 'BRL'
-                            }).format(sumCategory + balance.price)}
-                            </TextResume>
-                        </BlockSummary>
-                    </GroupBlock>
-                ))}
-            </Content>
-        </Container>
+                        }
+                    />
+                </Content>
+            </Container>
+        </SafeAreaView >
     )
 }
