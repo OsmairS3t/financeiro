@@ -33,7 +33,6 @@ import {
 
 export function Home() {
     const keyBalances = ASYNCSTORAGE_KEY_BALANCES;
-    //@LJF:Balances ate criar o .env no outro pc
     const navigation = useNavigation();
 
     const [balances, setBalances] = useState<IBalance[]>([])

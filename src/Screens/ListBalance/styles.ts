@@ -23,20 +23,8 @@ export const GroupHeader = styled.View`
     padding: 10px 20px;
 `;
 
-export const GroupInput = styled.View`
-    width: 150px;
-    padding: 5px;
-    display: flex;
-    flex-direction: row;
-    gap: 16px;
-    align-items: center;
-    justify-content: center;
+export const ButtonInputDate = styled.Pressable`
 `;
-
-export const IconDate = styled(Calendar).attrs(({theme})=>({
-    size: 36,
-    color: theme.COLORS.BR_BLOCK
-}))``;
 
 export const GroupSwitch = styled.View`
     flex-direction: row;

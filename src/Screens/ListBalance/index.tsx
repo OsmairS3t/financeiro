@@ -1,4 +1,6 @@
 import { useEffect, useState } from 'react';
+import {Text} from 'react-native'
+import { ASYNCSTORAGE_KEY_BALANCES } from '@env'
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -18,32 +20,22 @@ import {
     Container,
     Content,
     GroupHeader,
-    GroupInput,
-    IconDate,
+    ButtonInputDate,
     GroupSwitch,
     TextSwitch
 } from './styles';
 import Header from '@components/Header';
 
 export function ListBalance() {
-    const keyBalance = '@LJF:Balances';
+    const navigation = useNavigation();
+    const keyBalance = ASYNCSTORAGE_KEY_BALANCES;
     const [typeTransformed, setTypeTransformed] = useState('Entradas')
     const [isEnabled, setIsEnabled] = useState(false);
     const [type, setType] = useState<string>('income')
     const [balances, setBalances] = useState<IBalance[]>([])
-    const [dateBalance, setDateBalance] = useState('22/09/2023')
-    const [date, setDate] = useState(new Date())
+    const [dateBalance, setDateBalance] = useState('')
+    const [date, setDate] = useState<Date>(new Date())
     const [isOpen, setIsOpen] = useState(false)
-    const navigation = useNavigation();
-    const [dateFormated, setDateFormated] = useState(Intl.DateTimeFormat('pt-BR', {
-        day: '2-digit',
-        month: '2-digit',
-        year: 'numeric'
-    }).format(date))
-
-    function handleBack() {
-        navigation.navigate('home')
-    }
 
     function handleSwitch() {
         if (type === 'income') {
@@ -56,26 +48,21 @@ export function ListBalance() {
             setTypeTransformed('Entradas')
         }
     }
-    
-    /*
-        async function removeAll() {
-            await AsyncStorage.removeItem(keyBalance)
-        }
-    */
-
-    function onChange(event: DateTimePickerEvent, selectedDate: Date) {
-        if (event.type === 'set') {
-            const currentDate = selectedDate
-            setDate(currentDate);
-            if (Platform.OS !== 'web') {
-                showDatepicker()
-                setDate(currentDate);
-            }
-        } else {
+   
+    function onChange(selectedDate: Date) {
+        const currentDate = selectedDate
+        setDate(currentDate);
+        if (Platform.OS !== 'web') {
             showDatepicker()
+            setDate(currentDate);
+            setDateBalance(Intl.DateTimeFormat('pt-BR', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            }).format(currentDate))
         }
     };
-
+    
     const showDatepicker = () => {
         setIsOpen(!isOpen)
     };
@@ -102,37 +89,36 @@ export function ListBalance() {
             <Container>
                 <Header />
                 <Content>
-                    <Highlight onPress={handleBack} title="Listar Lançamentos" />
+                    <Highlight onPress={()=>{navigation.goBack()}} title="Listar Lançamentos" />
                     <GroupHeader>
-                        <GroupInput>
-                                <TextInput
-                                    placeholder={dateBalance}
-                                    id='dateBalance'
-                                    value={dateBalance}
-                                    onChangeText={setDateBalance}
-                                    keyboardType='numeric'
-                                    style={{
-                                        backgroundColor: '#eee',
-                                        padding: 10,
-                                        height: 40,
-                                        borderRadius: 5,
-                                        borderWidth: 1,
-                                        borderColor: '#aaa',
-                                        textAlign: 'center'
-                                    }}
-                                />
-                                <TouchableOpacity onPress={showDatepicker}>
-                                    <IconDate />
-                                </TouchableOpacity>
-                                {isOpen && (
-                                    <DateTimePicker
-                                        display='spinner'
-                                        value={date}
-                                        mode='date'
-                                        onChange={(event) => onChange(event, date)}
-                                    />
-                                )}
-                            </GroupInput>
+                        <ButtonInputDate onPress={showDatepicker}>
+                            <TextInput
+                                placeholder='Selecione a data'
+                                id='dateBalance'
+                                value={dateBalance}
+                                keyboardType='numeric'
+                                editable={false}
+                                onPressIn={showDatepicker}
+                                style={{
+                                    padding: 10,
+                                    color: '#000',
+                                    height: 40,
+                                    borderRadius: 5,
+                                    borderWidth: 1,
+                                    borderColor: '#aaa',
+                                    textAlign: 'center'
+                                }}
+                            />
+                        </ButtonInputDate>
+                        {isOpen &&
+                            <DateTimePicker 
+                                mode='date'
+                                display='spinner'
+                                value={date}
+                                onChange={() => onChange(date)}
+                            />
+                        }
+
                         <GroupSwitch>
                             <TextSwitch>
                                 {typeTransformed}
