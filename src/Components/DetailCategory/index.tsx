@@ -26,18 +26,17 @@ import {
 
 type RouteParams = {
     idcategory: number;
+    colorcategory: string;
 }
 
 export function DetailCategory() {
     const keyBalances = ASYNCSTORAGE_KEY_BALANCES
     let sumCategory = 0
     const [balances, setBalances] = useState<IBalance[]>([])
-    const [dataBalances, setDataBalances] = useState<IBalance[]>([])
-    const [colorCategory, setColorCategory] = useState<string>('');
     const [nameCategory, setNameCategory] = useState<string>('');
     const navigator = useNavigation();
     const route = useRoute();
-    const { idcategory } = route.params as RouteParams;
+    const { idcategory, colorcategory } = route.params as RouteParams;
 
     function handleBack() {
         navigator.navigate('home')
@@ -67,12 +66,12 @@ export function DetailCategory() {
         <SafeAreaView style={{ flex: 1 }}>
             <Container>
                 <Header />
+                <Highlight
+                    onPress={handleBack}
+                    title={nameCategory}
+                    colorBG={colorcategory}
+                />
                 <Content>
-                    <Highlight
-                        onPress={handleBack}
-                        title={nameCategory}
-                        colorBG={colorCategory}
-                    />
                     <Title>Todos os lançamentos</Title>
                     <FlatList
                         data={balances}

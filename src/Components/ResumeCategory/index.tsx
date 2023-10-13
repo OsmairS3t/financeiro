@@ -20,14 +20,14 @@ interface TransactionProps {
 export default function ResumeCategory({ balanceCategory }: TransactionProps) {
     const navigation = useNavigation()
 
-    function openDetail(id: number) {
-        navigation.navigate('detailcategory', { idcategory: id })
+    function openDetail(id: number, color: string) {
+        navigation.navigate('detailcategory', { idcategory: id, colorcategory: color })
     }
     return (
         <Container
             key={balanceCategory.idcategory}
             colorCategory={balanceCategory.colorcategory}
-            onPress={() => openDetail(balanceCategory.idcategory)}
+            onPress={() => openDetail(balanceCategory.idcategory, balanceCategory.colorcategory)}
         >
             <IconTransaction name={balanceCategory.iconcategory} />
             <TextTransaction>{balanceCategory.namecategory}</TextTransaction>

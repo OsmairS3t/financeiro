@@ -63,110 +63,50 @@ export function Home() {
         navigation.navigate('balance')
     }
 
-    function resumeTotalBalanceCategory() {
-        let arrBalanceCategories: IResumeCategory[] = []
-        let totCategories = 0;
-        let sumIncomeCategory = 0
-        let sumOutcomeCategory = 0
-        let balance_category = 0
-        let dataResume: IResumeCategory
-
-        Categories.map(category => {
-            sumIncomeCategory = 0
-            sumOutcomeCategory = 0
-            const balancesFilteredCategory: IBalance[] = balances.filter(balance => balance.category === category.id)
-            if (balancesFilteredCategory) {
-                balancesFilteredCategory.map(bfc => {
-                    if (bfc.typebalance === 'income') {
-                        sumIncomeCategory = sumIncomeCategory + bfc.price
-                    } else {
-                        sumOutcomeCategory = sumOutcomeCategory + bfc.price
-                    }
-                    balance_category = sumIncomeCategory - sumOutcomeCategory;
-                })
-                dataResume = {
-                    idcategory: category.id,
-                    iconcategory: category.icon,
-                    namecategory: category.name,
-                    colorcategory: category.color,
-                    balancecategory: balance_category,
-                    datebalance: dateBase
-                }
-            } else {
-                dataResume = {
-                    idcategory: category.id,
-                    iconcategory: category.icon,
-                    namecategory: category.name,
-                    colorcategory: category.color,
-                    balancecategory: 0,
-                    datebalance: dateBase
-                }
+    function TotalByCategory(category: number, balance: IBalance[]) {
+        let totalIncome = 0
+        let totalOutcome = 0
+        balance.map(bal => {
+            if (bal.typebalance === 'income') {
+                totalIncome = totalIncome + bal.price
             }
-            arrBalanceCategories.push(dataResume)
-            totCategories = totCategories + (sumIncomeCategory - sumOutcomeCategory)
+            if (bal.typebalance === 'outcome') {
+                totalOutcome = totalOutcome + bal.price
+            }
         })
-        setTotalBalance(totCategories)
-        setResumes(arrBalanceCategories)
+        return (totalIncome - totalOutcome)
     }
 
-    function resumeTotal() {
-        let totCategories = 0;
-        let sumIncomeCategory = 0
-        let sumOutcomeCategory = 0
-        let balance_category = 0
+    function ResumeByCategory() {
         let arrBalanceCategories: IResumeCategory[] = []
-        let dataResume: IResumeCategory
-
-        sumIncomeCategory = 0
-        sumOutcomeCategory = 0
-        const Balances = [
-            {
-                id: '1',
-                category: 1,
-                typebalance: 'income',
-                description: 'Coca-cola Lata 350ml',
-                price: 35,
-                datebalance: '01/08/2023',
-                file: 'file001.png'
-            },
-            {
-                id: '2',
-                category: 2,
-                typebalance: 'income',
-                description: 'Luz Jovem',
-                price: 10,
-                datebalance: '01/08/2023',
-                file: 'file001.png'
-            },
-            {
-                id: '3',
-                category: 1,
-                typebalance: 'income',
-                description: 'Balas diversas',
-                price: 29,
-                datebalance: '03/08/2023',
-                file: 'file001.png'
+        let dataResumeCategory: IResumeCategory
+        let totCategories = 0
+        Categories.map(category => {
+            const totalCategory = TotalByCategory(category.id, balances.filter(balance => balance.category === category.id))
+            dataResumeCategory = {
+                idcategory: category.id,
+                iconcategory: category.icon,
+                namecategory: category.name,
+                colorcategory: category.color,
+                balancecategory: totalCategory,
+                datebalance: dateBase
             }
-        ]
-
-        //   const sumWithInitial = Balances.reduce((accumulator, balance) => {
-        //     if(!accumulator[balance.category]) {
-        //       accumulator[balance.category] = []
-        //     }
-        //     accumulator[balance.category].push({balance})
-        //     return accumulator
-        //   }, {});
-
-        // console.log(sumWithInitial);
+            totCategories = totCategories + totalCategory
+            arrBalanceCategories.push(dataResumeCategory)
+        })
+        setTotalBalance(totCategories)
+        return arrBalanceCategories
     }
 
     useEffect(() => {
         getBalances();
-        resumeTotalBalanceCategory()
+        setResumes(ResumeByCategory)
+        //resumeTotalBalanceCategory()
     }, [])
 
     useFocusEffect(useCallback(() => {
-        resumeTotalBalanceCategory();
+        setResumes(ResumeByCategory)
+        //resumeTotalBalanceCategory();
     }, []));
 
     return (

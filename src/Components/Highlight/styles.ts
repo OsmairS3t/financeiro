@@ -6,9 +6,10 @@ type Props ={
 }
 
 export const Container = styled.View<Props>`
+    padding: 10px;
     flex-direction: row;
     align-items: center;
-    background-color: ${({colorBackground})=>colorBackground};
+    background-color: ${({ colorBackground }) => colorBackground};
 `;
 
 export const ButtonHighlightIcon = styled.TouchableOpacity`
